@@ -12,19 +12,35 @@ import { walk, WalkEntry } from "https://deno.land/std@0.95.0/fs/walk.ts";
 
 type File = { name: string; content: string };
 
+const template = (content: string) => {
+  return `
+  <html>
+  <script src="https://cdn.jsdelivr.net/gh/hyrious/github-markdown-css/github-markdown.css"></script>
+  <body>
+    ${content}
+  </body>
+  </html>
+  `;
+};
+
 const getOutputPath = (path: string, currentExt: string, targetExt: string) => {
   const relativePath = relative(".", path);
   return join("build", `${relativePath.replace(currentExt, "")}${targetExt}`);
 };
 
+const md2html = (content: string) => {
+  if (!content) {
+    return "";
+  }
+  const htmlContent = parseMarkdown(content);
+
+  return template(htmlContent);
+};
+
 const renderMd = async (path: string) => {
   const content = await Deno.readTextFile(path);
   const outputName = getOutputPath(path, ".md", ".html");
-  let htmlContent = "";
-
-  if (content) {
-    htmlContent = parseMarkdown(content);
-  }
+  const htmlContent = md2html(content);
 
   await ensureFile(outputName);
   await Deno.writeTextFile(outputName, htmlContent);
@@ -79,4 +95,4 @@ const build = async (dirName: string, watch = false): Promise<void> => {
   }
 };
 
-build("./example", true);
+build("./example", false);
