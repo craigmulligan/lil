@@ -9,8 +9,11 @@ import { parseMarkdown } from "https://deno.land/x/markdown_wasm/mod.ts";
 import { emptyDir } from "https://deno.land/std@0.95.0/fs/empty_dir.ts";
 import { ensureFile } from "https://deno.land/std@0.95.0/fs/ensure_file.ts";
 import { walk, WalkEntry } from "https://deno.land/std@0.95.0/fs/walk.ts";
+import { parse } from "https://deno.land/std@0.95.0/flags/mod.ts";
+import { serve } from "./server.ts";
 
 type File = { name: string; content: string };
+type Args = { watch?: boolean };
 
 const template = (content: string) => {
   return `
@@ -65,6 +68,8 @@ const build = async (dirName: string, watch = false): Promise<void> => {
   await Promise.all(renders);
 
   while (watch) {
+    console.log(`watching... ${dirName}`);
+    serve({ dirName: join("build", dirName) });
     const watcher = Deno.watchFs(dirName);
     for await (const event of watcher) {
       if (["create", "remove", "modify"].includes(event.kind)) {
@@ -95,4 +100,6 @@ const build = async (dirName: string, watch = false): Promise<void> => {
   }
 };
 
-build("./example", false);
+const args = parse(Deno.args) as Args;
+
+build("./example", args?.watch);
