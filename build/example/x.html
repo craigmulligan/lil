@@ -5,5 +5,16 @@
     <h1><a id="hii." class="anchor" aria-hidden="true" href="#hii."></a>hii.</h1>
 
   </body>
+  <script>
+    setInterval(function () {
+      fetch('/_reload')
+      .then(response => response.text())
+      .then(shouldReload => {
+         if (shouldReload) {
+           reload() 
+         }
+      });
+    }, 1000);
+  </script>
   </html>
   

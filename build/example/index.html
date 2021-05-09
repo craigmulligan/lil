@@ -7,7 +7,19 @@
 <pre><code class="language-javascript">console.log(&quot;hello&quot;)
 </code></pre>
 <p>yah</p>
+<p>go to <a href="/x.html">x</a></p>
 
   </body>
+  <script>
+    setInterval(function () {
+      fetch('/_reload')
+      .then(response => response.text())
+      .then(shouldReload => {
+         if (shouldReload) {
+           reload() 
+         }
+      });
+    }, 1000);
+  </script>
   </html>
   

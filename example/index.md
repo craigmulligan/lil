@@ -7,3 +7,5 @@ console.log("hello")
 ```
 
 yah
+
+go to [x](/x.html)
