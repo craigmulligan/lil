@@ -5,12 +5,12 @@ const reloadScript = `
   <script>
     setInterval(function () {
       fetch('/_reload')
-      .then(response => response.text())
-      .then(shouldReload => {
-         if (shouldReload) {
-           reload() 
+      .then(response => response.status)
+      .then(status => {
+         if (status === 200) {
+           location.reload()
          }
-      });
+      }).catch(console.log);
     }, 1000);
   </script>
 `
@@ -22,6 +22,7 @@ const template = (content: string) => {
   <body>
     ${content}
   </body>
+  ${reloadScript}
   </html>
   `;
 };
@@ -56,4 +57,13 @@ const MEDIA_TYPES: Record<string, string> = {
 /** Returns the content-type based on the extension of a path. */
 export function contentType(path: string): string | undefined {
   return MEDIA_TYPES[extname(path)];
+}
+
+
+export async function watcher(dirName: string, callback: (e: Deno.FsEvent) => void) {
+  console.log(`watching... ${dirName}`);
+  const watcher = Deno.watchFs(dirName);
+  for await (const event of watcher) {
+    callback(event)
+  }
 }

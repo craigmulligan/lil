@@ -4,7 +4,7 @@ import {
   Response,
 } from "https://deno.land/std@0.95.0/http/server.ts";
 import { posix } from "https://deno.land/std@0.95.0/path/mod.ts";
-import { contentType, md2html } from "./utils.ts";
+import { contentType, md2html, watcher } from "./utils.ts";
 import { exists } from "https://deno.land/std@0.95.0/fs/mod.ts"
 
 async function serveRaw(
@@ -68,6 +68,13 @@ async function serveFile(request: ServerRequest, fsPath: string) {
 
 export const serve = async (dirName: string) => {
   const server = Server({ port: 8080 });
+  let isDirty = false
+  watcher(dirName, (e) => {
+    console.log("New Change")
+    isDirty = true
+    console.log({ isDirty })
+  })
+
   console.log(`HTTP webserver running.  Access it at:  http://localhost:8080/`);
 
   for await (const request of server) {
@@ -75,6 +82,20 @@ export const serve = async (dirName: string) => {
     let fsPath = posix.join(dirName, normalizedUrl);
 
     let response: Response | undefined;
+
+    if (normalizedUrl === "/_reload") {
+      // crude live reload.
+      if (isDirty) {
+        request.respond({
+          status: 200,
+        });
+        isDirty = false
+      } else {
+        request.respond({
+          status: 304
+        })
+      }
+    }
 
     try {
       try {
