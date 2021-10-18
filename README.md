@@ -15,7 +15,7 @@ If you have something you'd like to put on the web in a clean readable format, b
 
 There are a few things baked in.
 
-- [] Live reloads in dev mode.
+- [x] Live reloads in dev mode.
 - [] Automatic code styling.
 - [] Respects users light/dark mode.
 - [] Built in Search.
