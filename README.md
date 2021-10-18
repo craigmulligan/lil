@@ -18,8 +18,7 @@ There are a few things baked in.
 - Live reloads in dev mode.
 - Automatic code styling.
 - Respects users light/dark mode.
-- Optimized images.
-- Built in Search 
+- Built in Search.
 - Built in rss.
 
 ## Install

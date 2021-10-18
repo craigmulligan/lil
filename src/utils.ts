@@ -1,13 +1,7 @@
 import { parseMarkdown } from "https://deno.land/x/markdown_wasm/mod.ts";
 import { extname } from "https://deno.land/std@0.95.0/path/mod.ts";
 
-const template = (content: string) => {
-  return `
-  <html>
-  <script src="https://cdn.jsdelivr.net/gh/hyrious/github-markdown-css/github-markdown.css"></script>
-  <body>
-    ${content}
-  </body>
+const reloadScript = `
   <script>
     setInterval(function () {
       fetch('/_reload')
@@ -19,6 +13,15 @@ const template = (content: string) => {
       });
     }, 1000);
   </script>
+`
+
+const template = (content: string) => {
+  return `
+  <html>
+  <script src="https://cdn.jsdelivr.net/gh/hyrious/github-markdown-css/github-markdown.css"></script>
+  <body>
+    ${content}
+  </body>
   </html>
   `;
 };

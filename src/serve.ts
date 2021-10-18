@@ -5,40 +5,9 @@ import {
 } from "https://deno.land/std@0.95.0/http/server.ts";
 import { posix } from "https://deno.land/std@0.95.0/path/mod.ts";
 import { contentType, md2html } from "./utils.ts";
+import { exists } from "https://deno.land/std@0.95.0/fs/mod.ts"
 
-function normalizeURL(url: string): string {
-  let normalizedUrl = url;
-  try {
-    normalizedUrl = decodeURI(normalizedUrl);
-  } catch (e) {
-    if (!(e instanceof URIError)) {
-      throw e;
-    }
-  }
-
-  try {
-    //allowed per https://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html
-    const absoluteURI = new URL(normalizedUrl);
-    normalizedUrl = absoluteURI.pathname;
-  } catch (e) {
-    //wasn't an absoluteURI
-    if (!(e instanceof TypeError)) {
-      throw e;
-    }
-  }
-
-  if (normalizedUrl[0] !== "/") {
-    throw new URIError("The request URI is malformed.");
-  }
-
-  normalizedUrl = posix.normalize(normalizedUrl);
-  const startOfParams = normalizedUrl.indexOf("?");
-  return startOfParams > -1
-    ? normalizedUrl.slice(0, startOfParams)
-    : normalizedUrl;
-}
-
-async function serveFile(
+async function serveRaw(
   request: ServerRequest,
   fsPath: string
 ): Promise<Response> {
@@ -76,12 +45,24 @@ async function serveMd(request: ServerRequest, fsPath: string) {
   };
 }
 
-async function process(request: ServerRequest, fsPath: string) {
+
+async function serveError(request: ServerRequest, err: Error) {
+  const headers = new Headers();
+  headers.set("content-type", "text/plain");
+
+  return {
+    status: 200,
+    body: err.message,
+    headers,
+  };
+}
+
+async function serveFile(request: ServerRequest, fsPath: string) {
   switch (contentType(fsPath)) {
     case "text/markdown":
       return serveMd(request, fsPath);
     default:
-      return serveFile(request, fsPath);
+      return serveRaw(request, fsPath);
   }
 }
 
@@ -90,18 +71,44 @@ export const serve = async (dirName: string) => {
   console.log(`HTTP webserver running.  Access it at:  http://localhost:8080/`);
 
   for await (const request of server) {
-    const normalizedUrl = normalizeURL(request.url);
+    const normalizedUrl = posix.normalize(request.url);
     let fsPath = posix.join(dirName, normalizedUrl);
-    if (fsPath.indexOf(dirName) !== 0) {
-      fsPath = dirName;
+
+    let response: Response | undefined;
+
+    try {
+      try {
+        const fileInfo = await Deno.stat(fsPath);
+        if (fileInfo.isDirectory) {
+          response = await serveFile(request, fsPath);
+          if (await exists(fsPath + "index.md")) {
+            response = await serveFile(request, fsPath + "index.md");
+          } else if (await exists(fsPath + "index.html")) {
+            response = await serveFile(request, fsPath + "index.html");
+          } else {
+            throw Error("Not Found")
+          }
+        } else {
+          response = await serveFile(request, fsPath);
+        }
+      } catch (e) {
+        if (e instanceof Deno.errors.NotFound) {
+          if (await exists(fsPath + ".md")) {
+            response = await serveFile(request, fsPath + ".md");
+          } else if (await exists(fsPath + ".html")) {
+            response = await serveFile(request, fsPath + ".html");
+          } else {
+            throw e
+          }
+        } else {
+          throw e
+        }
+      }
+    }
+    catch (e) {
+      response = await serveError(request, e)
     }
 
-    const fileInfo = await Deno.stat(fsPath);
-    if (fileInfo.isDirectory) {
-      fsPath = fsPath + "/index.md";
-    }
-
-    const res = await process(request, fsPath);
-    request.respond(res);
+    request.respond(response);
   }
 };
