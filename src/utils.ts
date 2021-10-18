@@ -3,15 +3,14 @@ import { extname } from "https://deno.land/std@0.95.0/path/mod.ts";
 
 const reloadScript = `
   <script>
-    setInterval(function () {
-      fetch('/_reload')
-      .then(response => response.status)
-      .then(status => {
-         if (status === 200) {
-           location.reload()
-         }
-      }).catch(console.log);
-    }, 1000);
+    const websocket = new WebSocket("ws://localhost:8080/_reload")
+
+    websocket.onmessage = (message) => {
+        if (message.data === "RELOAD") {
+          console.log("reloading")
+          location.reload()
+        }
+    }
   </script>
 `
 
@@ -60,10 +59,11 @@ export function contentType(path: string): string | undefined {
 }
 
 
-export async function watcher(dirName: string, callback: (e: Deno.FsEvent) => void) {
+export async function Watcher(dirName: string, callback: (e: Deno.FsEvent) => void) {
   console.log(`watching... ${dirName}`);
   const watcher = Deno.watchFs(dirName);
   for await (const event of watcher) {
     callback(event)
   }
 }
+

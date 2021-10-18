@@ -4,8 +4,10 @@ import {
   Response,
 } from "https://deno.land/std@0.95.0/http/server.ts";
 import { posix } from "https://deno.land/std@0.95.0/path/mod.ts";
-import { contentType, md2html, watcher } from "./utils.ts";
+import { contentType, md2html, Watcher } from "./utils.ts";
 import { exists } from "https://deno.land/std@0.95.0/fs/mod.ts"
+import { acceptWebSocket } from "https://deno.land/std@0.95.0/ws/mod.ts"
+import ReloadManager from "./reload.ts"
 
 async function serveRaw(
   request: ServerRequest,
@@ -66,35 +68,31 @@ async function serveFile(request: ServerRequest, fsPath: string) {
   }
 }
 
+
+
 export const serve = async (dirName: string) => {
   const server = Server({ port: 8080 });
-  let isDirty = false
-  watcher(dirName, (e) => {
-    console.log("New Change")
-    isDirty = true
-    console.log({ isDirty })
-  })
+  const reloadManager = new ReloadManager(dirName)
+  reloadManager.start()
 
   console.log(`HTTP webserver running.  Access it at:  http://localhost:8080/`);
 
-  for await (const request of server) {
+  async function handle(request: ServerRequest) {
     const normalizedUrl = posix.normalize(request.url);
+    console.log(`new request : ${normalizedUrl}`)
     let fsPath = posix.join(dirName, normalizedUrl);
 
     let response: Response | undefined;
 
     if (normalizedUrl === "/_reload") {
-      // crude live reload.
-      if (isDirty) {
-        request.respond({
-          status: 200,
-        });
-        isDirty = false
-      } else {
-        request.respond({
-          status: 304
-        })
-      }
+      const { conn, r: bufReader, w: bufWriter, headers } = request;
+      acceptWebSocket({
+        conn,
+        bufReader,
+        bufWriter,
+        headers,
+      }).then(reloadManager.handleWsEvent)
+      return
     }
 
     try {
@@ -131,5 +129,9 @@ export const serve = async (dirName: string) => {
     }
 
     request.respond(response);
+  }
+
+  for await (const request of server) {
+    handle(request)
   }
 };
