@@ -17,7 +17,8 @@ const reloadScript = `
 const template = (content: string) => {
   return `
   <html>
-  <script src="https://cdn.jsdelivr.net/gh/hyrious/github-markdown-css/github-markdown.css"></script>
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" src="https://cdn.jsdelivr.net/gh/hyrious/github-markdown-css/github-markdown.css" />
   <body>
     ${content}
   </body>
