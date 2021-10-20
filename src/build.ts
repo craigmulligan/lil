@@ -4,11 +4,10 @@ import {
   extname,
   dirname,
   relative,
-} from "https://deno.land/std@0.95.0/path/mod.ts";
-import { emptyDir } from "https://deno.land/std@0.95.0/fs/empty_dir.ts";
-import { ensureFile } from "https://deno.land/std@0.95.0/fs/ensure_file.ts";
-import { walk, WalkEntry } from "https://deno.land/std@0.95.0/fs/walk.ts";
-import LiveReload from "https://deno.land/x/livereload@0.1.0/src/mod.ts";
+} from "https://deno.land/std/path/mod.ts";
+import { emptyDir } from "https://deno.land/std/fs/empty_dir.ts";
+import { ensureFile } from "https://deno.land/std/fs/ensure_file.ts";
+import { walk, WalkEntry } from "https://deno.land/std/fs/walk.ts";
 
 import { md2html } from "./utils.ts";
 

@@ -1,6 +1,6 @@
 import { build } from "./build.ts";
 import { serve } from "./serve.ts";
-import { parse } from "https://deno.land/std@0.95.0/flags/mod.ts";
+import { parse } from "https://deno.land/std/flags/mod.ts";
 
 type Args = { dev?: boolean; _: string[] };
 

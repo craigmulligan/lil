@@ -1,5 +1,6 @@
+import { extname } from "https://deno.land/std/path/mod.ts";
+// import { CSS, render } from "https://deno.land/x/gfm/mod.ts";
 import { parseMarkdown } from "https://deno.land/x/markdown_wasm/mod.ts";
-import { extname } from "https://deno.land/std@0.95.0/path/mod.ts";
 
 const reloadScript = `
   <script>
@@ -18,14 +19,17 @@ const template = (content: string) => {
   return `
   <html>
   <link rel="stylesheet" href="/style.css" />
-  <link rel="stylesheet" src="https://cdn.jsdelivr.net/gh/hyrious/github-markdown-css/github-markdown.css" />
   <body>
+    <content data-color-mode="auto" data-light-theme="light" data-dark-theme="dark" class="markdown-body">
     ${content}
+    </content>
   </body>
   ${reloadScript}
   </html>
   `;
 };
+
+//const md = new MarkdownIt();
 
 export const md2html = (content: string) => {
   if (!content) {
