@@ -1,12 +1,14 @@
-# Hello world!!
+## I'm craig ([@hobochild](https://github.com/hobochild)), I <mark>love</mark> trying to build complex systems with <mark>simple software</mark>.
 
-oi oi
+I'm currently in lock down on the east coast of 🇿🇦. Before that I lived on the canals of London, where I worked for [beryl](https://beryl.cc/) and [balena](https://balena.io/).
 
-```javascript
-console.log("hello world")
-```
+Right now I'm contracting remotely & focusing on my 🏄.
 
-yahh!
+If you'd like to work with me or simply chat you can reach me [here](mailto:website@hobochild.com).
 
-go to [x](/x)
-go to [y](/y)
+
+[posts](/x)
+[projects](/y)
+[gpg public key](/publickey.txt)
+[twitter](/y)
+[github](/github)

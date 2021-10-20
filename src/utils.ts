@@ -1,5 +1,5 @@
 import { path } from "./deps.ts";
-import { CSS, render } from "./markdown.ts";
+import { render } from "./markdown.ts";
 
 const reloadScript = `
   <script>
@@ -14,16 +14,18 @@ const reloadScript = `
   </script>
 `
 
+
+// <content data-color-mode="auto" data-light-theme="light" data-dark-theme="dark" class="markdown-body">
+
 const template = (content: string) => {
   return `
   <html>
-  <style>
-  ${CSS}
-  </style>
   <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/code.css" />
   <body>
-    <content data-color-mode="auto" data-light-theme="light" data-dark-theme="dark" class="markdown-body">
+    <article>
     ${content}
+    </article>
     </content>
   </body>
   ${reloadScript}

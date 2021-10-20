@@ -2,23 +2,57 @@
 /*! lil.css v0.1.0 | MIT License | github.com/hobochild/lil.css/ */
 /* The Basics */
 /* https://fireship.io/snippets/light-dark-mode-theme-css/ */
+:root {
+  --accent-color: #EB5757;
+  --sans-serif-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+  --serif-font: Lyon-Text, Georgia, serif;
+}
+/* 
+light-grey: rgba(0,0,0,0.6)
+
+*/
+
 @media (prefers-color-scheme: dark) {
     :root {
-        --text-color: #b6b6b6;
+        --text-color: white;
         --background: #121212;
     }
 }
 
 @media (prefers-color-scheme: light) {
     :root {
-        --text-color: #121212;
-        --background: #000000;
+        --text-color: #111111;
     }
+}
+
+p {
+  margin: 0.9rem auto;
 }
 
 html {
   font-size: 62.5%;
   box-sizing: border-box;
+  font-variant-numeric: oldstyle-nums;
+  text-size-adjust: 100%;
+}
+
+article {
+  margin: 100px 0;
+}
+
+article > * {
+  /* 
+    slightly unorthodox 
+    we need to declare max-width on each child
+    so that we can over-ride with blockquote.
+  */
+  max-width: 700px;
+  margin: 0 auto;
+  font-family: var(--serif-font);
+}
+
+a.anchor {
+  text-decoration: none;
 }
 
 body {
@@ -26,11 +60,29 @@ body {
   background: var(--background);
   font-size: 2rem;
   font-weight: 400;
-  font-family: Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", SimSun, "Nanum Myeongjo", NanumMyeongjo, Batang, serif
+  line-height: 1.55;
+  font-family: Lyon-Text, Georgia, serif
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+blockquote p, h1, h2, h3, h4, h5, h6 {
+  font-family: var(--sans-serif-font);
+  letter-spacing: -0.025rem;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 5rem;
+  margin: 4.5rem auto;
+}
+
+h2 {
+  font-size: 4rem;
+  margin: 3.5rem auto;
+}
+
+h3 {
+  font-size: 3.5rem;
+  margin: 3rem auto;
 }
 
 *, ::after, ::before {
@@ -39,6 +91,11 @@ h1, h2, h3, h4, h5, h6 {
 
 a {
   color: #121212;
+}
+
+a:hover {
+  text-decoration: none;
+  color: var(--accent-color);
 }
 
 blockquote, dl, figure, form, ol, p, pre, table, ul {
@@ -50,24 +107,8 @@ img {
   max-width: 100%;
 }
 
-/* A Cool Container */
-
-.container {
-  margin: 0 auto;
-  max-width: 66rem;
-  padding: 0 1rem;
-  width: 100%;
-  position: relative;
-}
-
-/* The Button */
-
-.button {
-  text-decoration: none;
-}
 
 button,
-.button,
 input[type="button"],
 input[type="reset"],
 input[type="submit"] {
@@ -82,15 +123,12 @@ input[type="submit"] {
   cursor: pointer;
 }
 
-button.filled,
-.button.filled,
 input[type="button"].filled,
 input[type="reset"].filled,
 input[type="submit"].filled {
   color: white;
 }
 
-.button,
 button,
 dd,
 dt,
@@ -103,8 +141,9 @@ input[type="submit"] {
 
 /* The List */
 
-ul {
-  list-style: square;
+li {
+  margin: 0.9em 0px;
+  padding: 0px 0px 0px 1em;
 }
 
 /* The Form */
@@ -165,12 +204,8 @@ th {
   text-align: left;
 }
 
-/* The Blockquote and the Code */
-
-blockquote, pre {
+pre {
   border-left: 0.3rem solid #121212;
-  margin-left: 0;
-  margin-right: 0;
   padding: 1rem 1.5rem;
   overflow-y: hidden;
 }
@@ -187,9 +222,29 @@ pre > code {
   display: block;
 }
 
-/* The Break Line */
+code {
+  font-family: var(--serif-font);
+  font-weight: 500;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgb(249, 245, 241);
+  border-radius: 3px;
+  font-size: 14px;
+  padding: 1px 5px;
+  -webkit-box-decoration-break: clone;
+}
 
 hr {
   border: 0.2rem solid #121212;
   border-bottom-width: 0.1rem;
+}
+
+blockquote {
+  max-width: 940px;
+  text-align: center;
+  margin: 4.5rem auto;
+}
+
+blockquote > p {
+  font-weight: 800;
+  font-size: 3.5rem;
 }

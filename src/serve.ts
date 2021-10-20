@@ -29,7 +29,7 @@ async function serveMd(request: Request, fsPath: string) {
   const content = await Deno.readTextFile(fsPath);
   const body = await md2html(content);
   const headers = new Headers();
-  headers.set("content-type", "text/html");
+  headers.set("content-type", "text/html;charset=utf-8");
 
   return new Response(body, {
     status: 200,
@@ -111,7 +111,11 @@ export const serve = async (dirName: string) => {
   async function handleConnection(conn: Deno.Conn) {
     const httpConn = Deno.serveHttp(conn);
     for await (const requestEvent of httpConn) {
-      await requestEvent.respondWith(handleRequest(requestEvent.request));
+      try {
+        await requestEvent.respondWith(handleRequest(requestEvent.request));
+      } catch (e) {
+        console.log(e)
+      }
     }
   }
 
