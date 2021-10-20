@@ -2,15 +2,30 @@
 /*! lil.css v0.1.0 | MIT License | github.com/hobochild/lil.css/ */
 /* The Basics */
 /* https://fireship.io/snippets/light-dark-mode-theme-css/ */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text-color: #b6b6b6;
+        --background: #121212;
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --text-color: #121212;
+        --background: #000000;
+    }
+}
+
 html {
   font-size: 62.5%;
   box-sizing: border-box;
 }
 
 body {
+  color: var(--text-color);
+  background: var(--background);
   font-size: 2rem;
   font-weight: 400;
-  color: #121212;
   font-family: Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", SimSun, "Nanum Myeongjo", NanumMyeongjo, Batang, serif
 }
 
@@ -59,7 +74,6 @@ input[type="submit"] {
   display: inline-block;
   vertical-align: middle;
   border-radius: 0;
-  background: white;
   line-height: 2.2rem;
   font-size: 1.6rem;
   color: #121212;
@@ -74,7 +88,6 @@ input[type="button"].filled,
 input[type="reset"].filled,
 input[type="submit"].filled {
   color: white;
-  background: #121212;
 }
 
 .button,
@@ -174,113 +187,9 @@ pre > code {
   display: block;
 }
 
-/* The Progress Bar */
-
-progress {
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  border-radius: 0;
-  display: block;
-  height: 1rem;
-  border: 0.1rem solid #121212;
-  background: white;
-  color: #121212;
-  overflow: hidden;
-  padding: 0;
-  width: 100%;
-}
-progress::-webkit-progress-bar {
-  background-color: white;
-}
-progress::-webkit-progress-value {
-  background-color: #121212;
-}
-progress::-moz-progress-bar {
-  background-color: #121212;
-}
-progress::-ms-fill {
-  background-color: #121212;
-}
-
 /* The Break Line */
 
 hr {
   border: 0.2rem solid #121212;
   border-bottom-width: 0.1rem;
 }
-
-/* Dark Mode */
-
-@media (prefers-color-scheme: dark) {
-  body {
-    background: #121212;
-    color: white;
-  }
-  a {
-    color: white;
-  }
-  button,
-  .button,
-  input[type="button"],
-  input[type="reset"],
-  input[type="submit"] {
-    background: #121212;
-    color: white;
-    border-color: white;
-  }
-  button.filled,
-  .button.filled,
-  input[type="button"].filled,
-  input[type="reset"].filled,
-  input[type="submit"].filled {
-    color: #121212;
-    background: white;
-  }
-  input[type="email"],
-  input[type="number"],
-  input[type="password"],
-  input[type="search"],
-  input[type="tel"],
-  input[type="text"],
-  input[type="url"],
-  textarea,
-  select {
-    color: white;
-    border-color: white;
-  }
-  td {
-    border-bottom-color: white;
-  }
-  th {
-    border-bottom-color: white;
-  }
-  blockquote, pre {
-    border-left-color: white;
-  }
-  pre {
-    border-color: white;
-    border-left-color: white;
-  }
-  progress {
-    border-color: white;
-    background: #121212;
-    color: white;
-  }
-  progress::-webkit-progress-bar {
-    background-color: #121212;
-  }
-  progress::-webkit-progress-value {
-    background-color: white;
-  }
-  progress::-moz-progress-bar {
-    background-color: white;
-  }
-  progress::-ms-fill {
-    background-color: white;
-  }
-  hr {
-    border-color: white;
-  }
-}
-
-/* strong */

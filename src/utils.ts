@@ -17,10 +17,10 @@ const reloadScript = `
 const template = (content: string) => {
   return `
   <html>
-  <link rel="stylesheet" href="/style.css" />
   <style>
   ${CSS}
   </style>
+  <link rel="stylesheet" href="/style.css" />
   <body>
     <content data-color-mode="auto" data-light-theme="light" data-dark-theme="dark" class="markdown-body">
     ${content}
