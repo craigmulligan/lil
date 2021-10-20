@@ -1,6 +1,5 @@
-import { posix } from "https://deno.land/std/path/mod.ts";
-import { contentType, md2html, Watcher } from "./utils.ts";
-import { exists } from "https://deno.land/std/fs/mod.ts"
+import { path, exists } from "./deps.ts";
+import { contentType, md2html } from "./utils.ts";
 import ReloadManager from "./reload.ts"
 
 async function serveRaw(
@@ -64,7 +63,7 @@ export const serve = async (dirName: string) => {
     const url = new URL(request.url);
 
     console.log(`new request : ${url.pathname}`)
-    let fsPath = posix.join(dirName, url.pathname);
+    let fsPath = path.join(dirName, url.pathname);
 
     if (url.pathname === "/_reload") {
       const upgrade = request.headers.get("upgrade") || "";

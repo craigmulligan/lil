@@ -1,8 +1,8 @@
 dev:
-	deno run --unstable --watch  --allow-all ./src/index.ts ./example --dev
+	deno run --unstable --watch  --allow-all ./src/mod.ts ./example --dev
 
 build:
-	deno run ./src/index.ts ./example --dev
+	deno run ./src/mod.ts ./example --dev
 
 reload:
-	deno cache --unstable ./src/index.ts --reload
+	deno cache --unstable ./src/mod.ts --reload

@@ -1,6 +1,5 @@
-import { extname } from "https://deno.land/std/path/mod.ts";
-// import { CSS, render } from "https://deno.land/x/gfm/mod.ts";
-import { parseMarkdown } from "https://deno.land/x/markdown_wasm/mod.ts";
+import { path } from "./deps.ts";
+import { CSS, render } from "./markdown.ts";
 
 const reloadScript = `
   <script>
@@ -19,6 +18,9 @@ const template = (content: string) => {
   return `
   <html>
   <link rel="stylesheet" href="/style.css" />
+  <style>
+  ${CSS}
+  </style>
   <body>
     <content data-color-mode="auto" data-light-theme="light" data-dark-theme="dark" class="markdown-body">
     ${content}
@@ -29,13 +31,11 @@ const template = (content: string) => {
   `;
 };
 
-//const md = new MarkdownIt();
-
 export const md2html = (content: string) => {
   if (!content) {
     return "";
   }
-  const htmlContent = parseMarkdown(content);
+  const htmlContent = render(content, "/");
 
   return template(htmlContent);
 };
@@ -59,16 +59,6 @@ const MEDIA_TYPES: Record<string, string> = {
 };
 
 /** Returns the content-type based on the extension of a path. */
-export function contentType(path: string): string | undefined {
-  return MEDIA_TYPES[extname(path)];
+export function contentType(pathname: string): string | undefined {
+  return MEDIA_TYPES[path.extname(pathname)];
 }
-
-
-export async function Watcher(dirName: string, callback: (e: Deno.FsEvent) => void) {
-  console.log(`watching... ${dirName}`);
-  const watcher = Deno.watchFs(dirName);
-  for await (const event of watcher) {
-    callback(event)
-  }
-}
-
