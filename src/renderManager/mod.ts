@@ -1,7 +1,7 @@
 import { DirName } from "../types.ts";
 import Md from "./md.ts";
 import Generic from "./generic.ts";
-import { getContentType } from "./utils.ts";
+import Render from "./renderer.ts";
 
 export default class RendererManager {
   md: Md;
@@ -13,7 +13,7 @@ export default class RendererManager {
   }
 
   async serve(fsPath: string) {
-    switch (getContentType(fsPath)) {
+    switch (Render.getContentType(fsPath)) {
       case "text/markdown":
         return this.md.serve(fsPath);
       default:
@@ -22,7 +22,7 @@ export default class RendererManager {
   }
 
   async build(fsPath: string) {
-    switch (getContentType(fsPath)) {
+    switch (Render.getContentType(fsPath)) {
       case "text/markdown":
         return this.md.build(fsPath);
       default:

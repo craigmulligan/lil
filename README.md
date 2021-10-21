@@ -18,10 +18,9 @@ There are a few things baked in.
 - [x] Live reloads in dev mode.
 - [x] Automatic code (github like) styling.
 - [x] Respects users light/dark mode.
-- [ ] Default set of handy markdown plugins.
 - [] Built in RSS.
 - [] Built in Search.
-- [] Built in image optimizer.
+- [] Built in image optimization.
 
 ## Install
 

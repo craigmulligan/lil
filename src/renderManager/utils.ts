@@ -1,5 +1,5 @@
-import { emojify, marked, path, frontMatter, Prism } from "../deps.ts";
-import { IsDev, DirName, FrontMatterData } from "../types.ts";
+import { marked, frontMatter, Prism } from "../deps.ts";
+import { IsDev, FrontMatterData } from "../types.ts";
 
 // TODO: figure out some dynamic importing mechanism.
 // awaiting async support in marked.
@@ -68,8 +68,6 @@ export function render(markdown: string, baseUrl: string | undefined, isDev: IsD
     return "";
   }
   const { attributes, body } = frontMatter(markdown)
-  // markdown = emojify();
-
 
   const html = marked(body, {
     baseUrl,
@@ -116,43 +114,3 @@ const template = (content: string, isDev: IsDev, opts: FrontMatterData = {}) => 
   </html>
   `;
 };
-
-const MEDIA_TYPES: Record<string, string> = {
-  ".md": "text/markdown",
-  ".html": "text/html",
-  ".htm": "text/html",
-  ".json": "application/json",
-  ".map": "application/json",
-  ".txt": "text/plain",
-  ".ts": "text/typescript",
-  ".tsx": "text/tsx",
-  ".js": "application/javascript",
-  ".jsx": "text/jsx",
-  ".gz": "application/gzip",
-  ".css": "text/css",
-  ".wasm": "application/wasm",
-  ".mjs": "application/javascript",
-  ".svg": "image/svg+xml",
-};
-
-export function getContentType(pathname: string): string | undefined {
-  return MEDIA_TYPES[path.extname(pathname)];
-}
-
-export function getOutputFsPath(
-  dirName: DirName,
-  fsPath: string,
-  targetExt?: string,
-) {
-  const relativefileName = path.relative(dirName, fsPath);
-  const currentExt = path.extname(fsPath);
-
-  if (!targetExt) {
-    targetExt = currentExt;
-  }
-
-  return path.join(
-    "build",
-    `${relativefileName.replace(currentExt, "")}${targetExt}`,
-  );
-}

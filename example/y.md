@@ -1,3 +1,7 @@
+
+<a href="/"><svg id="i-arrow-left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 28" width="32" height="14" zindex="1" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+        <path d="M10 6 L2 16 10 26 M2 16 L30 16"></path>
+    </svg>Home</a>
 # h1 Heading 8-)
 ## h2 Heading
 ### h3 Heading

@@ -1,5 +1,4 @@
 import { fs } from "../deps.ts";
-import { getContentType, getOutputFsPath } from "./utils.ts";
 import Renderer from './renderer.ts'
 
 export default class Generic extends Renderer {
@@ -10,7 +9,7 @@ export default class Generic extends Renderer {
     ]);
     const headers = new Headers();
     headers.set("content-length", fileInfo.size.toString());
-    const contentTypeValue = getContentType(fsPath);
+    const contentTypeValue = Renderer.getContentType(fsPath);
     if (contentTypeValue) {
       headers.set("content-type", contentTypeValue);
     }
@@ -24,7 +23,7 @@ export default class Generic extends Renderer {
   }
 
   async build(fsPath: string) {
-    const outfileName = getOutputFsPath(this.dirName, fsPath);
+    const outfileName = this.getOutputFsPath(fsPath);
     await fs.ensureFile(outfileName);
     return Deno.copyFile(fsPath, outfileName);
   }

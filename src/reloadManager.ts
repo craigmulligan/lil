@@ -1,5 +1,4 @@
 export default class ReloadManager {
-  // https://blog.logrocket.com/using-websockets-with-deno/#creating-websocket-server
   dirName: string;
   socket: WebSocket | null;
 

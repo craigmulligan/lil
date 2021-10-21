@@ -1,4 +1,4 @@
-import { getOutputFsPath, render } from "./utils.ts";
+import { render } from "./utils.ts";
 import { fs } from "../deps.ts";
 import Renderer from "./renderer.ts"
 
@@ -17,7 +17,7 @@ export default class Md extends Renderer {
 
   async build(fsPath: string) {
     const content = await Deno.readTextFile(fsPath);
-    const outputName = getOutputFsPath(this.dirName, fsPath, ".html");
+    const outputName = this.getOutputFsPath(fsPath, ".html");
     const html = render(content, "/", false);
 
     console.log(fsPath)
