@@ -6,6 +6,26 @@ Right now I'm contracting remotely & focusing on my 🏄.
 
 If you'd like to work with me or simply chat you can reach me [here](mailto:website@hobochild.com).
 
+---
+
+*~~The world is flat.~~*
+
+<details>
+<summary>Shopping list</summary>
+
+* Vegetables
+* Fruits
+* Fish
+
+</details>
+
+
+| Syntax | Description |
+| ----------- | ----------- |
+| Header | Title |
+| Paragraph | Text |
+
+*<small>Some small description of the table above. More info [here](/)</small>*
 
 [posts](/x)
 [projects](/y)
