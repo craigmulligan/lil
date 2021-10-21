@@ -1,5 +1,18 @@
 // taken from https://github.com/lucacasonato/deno-gfm/blob/main/mod.ts
-import { emojify, marked, Prism, sanitizeHtml } from "./deps.ts";
+import { emojify, marked, Prism } from "./deps.ts";
+
+// TODO: figure out some dynamic importing mechanism.
+// awaiting async support in marked. 
+// https://github.com/markedjs/marked/issues/458
+import "https://esm.sh/prismjs@1.25.0/components/prism-typescript?no-check";
+import "https://esm.sh/prismjs@1.25.0/components/prism-diff?no-check";
+import "https://esm.sh/prismjs@1.25.0/components/prism-bash?no-check";
+import "https://esm.sh/prismjs@1.25.0/components/prism-rust?no-check";
+import "https://esm.sh/prismjs@1.25.0/components/prism-python?no-check";
+import "https://esm.sh/prismjs@1.25.0/components/prism-json?no-check";
+import "https://esm.sh/prismjs@1.25.0/components/prism-jsx?no-check";
+import "https://esm.sh/prismjs@1.25.0/components/prism-java?no-check";
+import "https://esm.sh/prismjs@1.25.0/components/prism-c?no-check";
 
 class Renderer extends marked.Renderer {
   heading(
@@ -13,13 +26,12 @@ class Renderer extends marked.Renderer {
   }
 
   code(code: string, language = "") {
-    // a language of `ts, ignore` should really be `ts`
     language = language.split(",")[0];
     const grammar = Object.hasOwnProperty.call(Prism.languages, language)
       ? Prism.languages[language]
       : undefined;
     if (grammar === undefined) {
-      return `<pre><code>${code}</code></pre>`;
+      return `<pre>${code}</pre>`;
     }
     const html = Prism.highlight(code, grammar, language);
     return `<div class="highlight highlight-source-${language}"><pre>${html}</pre></div>`;
@@ -43,37 +55,4 @@ export function render(markdown: string, baseUrl: string | undefined): string {
   });
 
   return html
-
-  // return sanitizeHtml(html, {
-  //   allowedTags: sanitizeHtml.defaults.allowedTags.concat([
-  //     "img",
-  //     "svg",
-  //     "path",
-  //   ]),
-  //   allowedAttributes: {
-  //     ...sanitizeHtml.defaults.allowedAttributes,
-  //     img: ["src", "alt", "height", "width", "align"],
-  //     a: ["id", "aria-hidden", "href", "tabindex", "rel"],
-  //     svg: ["viewbox", "width", "height", "aria-hidden"],
-  //     path: ["fill-rule", "d"],
-  //   },
-  //   allowedClasses: {
-  //     div: ["highlight"],
-  //     span: [
-  //       "token",
-  //       "keyword",
-  //       "operator",
-  //       "number",
-  //       "boolean",
-  //       "function",
-  //       "string",
-  //       "comment",
-  //       "class-name",
-  //       "regex",
-  //       "regex-delimiter",
-  //     ],
-  //     a: ["anchor"],
-  //   },
-  //   allowProtocolRelative: false,
-  // });
 }

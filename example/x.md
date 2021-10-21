@@ -16,13 +16,24 @@
 
 Below I'll run through each type of test case and provide some examples.
 
+```diff
+public class Hello1
+{
+   public static void Main()
+   {
+-      System.Console.WriteLine("Hello, World!");
++      System.Console.WriteLine("Rock all night long!");
+   }
+}
+```
+
 ### 1 + 2 Page Methods & Page Components
 
 I'll lump these two together because often the output of one is used as the input for the other so they are convenient to write together.
 
 Lets image we have the following Dashboard page, It fetches all the users in the db prints them to screen.
 
-```javascript
+```jsx
 // pages/dashboard.js
 import client from "nawr/client";
 
@@ -170,3 +181,10 @@ afterEach(() => {
 ```
 
 This above was mostly pseudo-code but it should be fairly easy to apply these methods to your app. If are after full working examples the code can be found [here](https://github.com/hobochild/boiler)
+
+
+```python
+def cut(s):
+  """Some python function"""
+  return s
+```

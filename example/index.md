@@ -25,7 +25,7 @@ If you'd like to work with me or simply chat you can reach me [here](mailto:webs
 | Header | Title |
 | Paragraph | Text |
 
-*<small>Some small description of the table above. More info [here](/)</small>*
+*<small>Some small description of the table above. More info [here](/abc "something you want to see")</small>*
 
 [posts](/x)
 [projects](/y)
