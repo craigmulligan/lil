@@ -1,9 +1,10 @@
 export type IsDev = boolean;
 export type DirName = string;
 
-export interface Renderer {
-  dirName: DirName;
-
-  build: (fileName: string) => Promise<void>;
-  serve: (fileName: string) => Promise<Response>;
+export type FrontMatterData = {
+  title?: string
+  description?: string
+  publishedAt?: string
+  keywords?: string
+  author?: string
 }

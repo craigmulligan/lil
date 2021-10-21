@@ -1,3 +1,8 @@
+---
+title: Just hack'n
+description: Nothing to see here
+---
+
 ## I'm craig ([@hobochild](https://github.com/hobochild)), I <mark>love</mark> trying to build complex systems with <mark>simple software</mark>.
 
 I'm currently in lock down on the east coast of 🇿🇦. Before that I lived on the canals of London, where I worked for [beryl](https://beryl.cc/) and [balena](https://balena.io/).
