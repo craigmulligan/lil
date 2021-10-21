@@ -1,44 +1,8 @@
-import { path, exists } from "./deps.ts";
-import { contentType, md2html } from "./utils.ts";
-import ReloadManager from "./reload.ts"
+import { fs, path } from "./deps.ts";
+import ReloadManager from "./reloadManager.ts";
+import RenderManager from "./renderManager/mod.ts";
 
-async function serveRaw(
-  request: Request,
-  fsPath: string
-): Promise<Response> {
-  const [file, fileInfo] = await Promise.all([
-    Deno.open(fsPath),
-    Deno.stat(fsPath),
-  ]);
-
-  const content = await Deno.readTextFile(fsPath);
-  const headers = new Headers();
-  headers.set("content-length", fileInfo.size.toString());
-  const contentTypeValue = contentType(fsPath);
-  if (contentTypeValue) {
-    headers.set("content-type", contentTypeValue);
-  }
-
-  return new Response(content, {
-    status: 200,
-    headers,
-  });
-}
-
-async function serveMd(request: Request, fsPath: string) {
-  const content = await Deno.readTextFile(fsPath);
-  const body = await md2html(content);
-  const headers = new Headers();
-  headers.set("content-type", "text/html;charset=utf-8");
-
-  return new Response(body, {
-    status: 200,
-    headers,
-  });
-}
-
-
-async function serveError(request: Request, err: Error) {
+async function serveError(err: Error) {
   const headers = new Headers();
   headers.set("content-type", "text/plain");
 
@@ -48,21 +12,16 @@ async function serveError(request: Request, err: Error) {
   });
 }
 
-async function serveFile(request: Request, fsPath: string) {
-  switch (contentType(fsPath)) {
-    case "text/markdown":
-      return serveMd(request, fsPath);
-    default:
-      return serveRaw(request, fsPath);
-  }
-}
-
-
 export const serve = async (dirName: string) => {
+  const server = Deno.listen({ port: 8080 });
+  const reloadManager = new ReloadManager(dirName);
+  const renderManager = new RenderManager(dirName);
+  reloadManager.start();
+
   async function handleRequest(request: Request) {
     const url = new URL(request.url);
 
-    console.log(`new request : ${url.pathname}`)
+    console.log(`new request : ${url.pathname}`);
     let fsPath = path.join(dirName, url.pathname);
 
     if (url.pathname === "/_reload") {
@@ -71,40 +30,40 @@ export const serve = async (dirName: string) => {
         return new Response("request isn't trying to upgrade to websocket.");
       }
       const { socket, response } = Deno.upgradeWebSocket(request);
-      reloadManager.addSocket(socket)
-      return response
+      reloadManager.addSocket(socket);
+      return response;
     }
 
     try {
       try {
         const fileInfo = await Deno.stat(fsPath);
         if (fileInfo.isDirectory) {
-          if (await exists(fsPath + "index.md")) {
-            return serveFile(request, fsPath + "index.md");
-          } else if (await exists(fsPath + "index.html")) {
-            return serveFile(request, fsPath + "index.html");
+          if (await fs.exists(fsPath + "index.md")) {
+            return RenderManager.serve(fsPath + "index.md");
+          } else if (await fs.exists(fsPath + "index.html")) {
+            return renderManager.serve(fsPath + "index.html");
           } else {
-            throw Error("Not Found")
+            throw Error("Not Found");
           }
         } else {
-          return serveFile(request, fsPath);
+          return renderManager.serve(fsPath);
         }
       } catch (e) {
+        // TODO should we be allowing this?
         if (e instanceof Deno.errors.NotFound) {
-          if (await exists(fsPath + ".md")) {
-            return serveFile(request, fsPath + ".md");
-          } else if (await exists(fsPath + ".html")) {
-            return serveFile(request, fsPath + ".html");
+          if (await fs.exists(fsPath + ".md")) {
+            return renderManager.serve(fsPath + ".md");
+          } else if (await fs.exists(fsPath + ".html")) {
+            return renderManager.serve(fsPath + ".html");
           } else {
-            throw e
+            throw e;
           }
         } else {
-          throw e
+          throw e;
         }
       }
-    }
-    catch (e) {
-      return serveError(request, e)
+    } catch (e) {
+      return serveError(request, e);
     }
   }
 
@@ -114,14 +73,10 @@ export const serve = async (dirName: string) => {
       try {
         await requestEvent.respondWith(handleRequest(requestEvent.request));
       } catch (e) {
-        console.log(e)
+        console.log(e);
       }
     }
   }
-
-  const server = Deno.listen({ port: 8080 });
-  const reloadManager = new ReloadManager(dirName)
-  reloadManager.start()
 
   console.log(`HTTP webserver running.  Access it at:  http://localhost:8080/`);
   for await (const connection of server) {

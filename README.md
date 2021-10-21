@@ -4,7 +4,7 @@
 
 This means.
 
-* NO coniguration files
+* NO configuration files
 * NO taxonomy systems
 * NO templating languages
 * NO javascript frameworks
@@ -16,9 +16,10 @@ If you have something you'd like to put on the web in a clean readable format, b
 There are a few things baked in.
 
 - [x] Live reloads in dev mode.
-- [] Automatic code styling.
-- [] Respects users light/dark mode.
-- [] Built in rss.
+- [x] Automatic code (github like) styling.
+- [x] Respects users light/dark mode.
+- [ ] Default set of handy markdown plugins.
+- [] Built in RSS.
 - [] Built in Search.
 - [] Built in image optimizer.
 
