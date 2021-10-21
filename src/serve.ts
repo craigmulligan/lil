@@ -39,7 +39,7 @@ export const serve = async (dirName: string) => {
         const fileInfo = await Deno.stat(fsPath);
         if (fileInfo.isDirectory) {
           if (await fs.exists(fsPath + "index.md")) {
-            return RenderManager.serve(fsPath + "index.md");
+            return renderManager.serve(fsPath + "index.md");
           } else if (await fs.exists(fsPath + "index.html")) {
             return renderManager.serve(fsPath + "index.html");
           } else {
@@ -63,7 +63,7 @@ export const serve = async (dirName: string) => {
         }
       }
     } catch (e) {
-      return serveError(request, e);
+      return serveError(e);
     }
   }
 
