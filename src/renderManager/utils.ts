@@ -15,6 +15,13 @@ import "https://esm.sh/prismjs@1.25.0/components/prism-java?no-check";
 import "https://esm.sh/prismjs@1.25.0/components/prism-c?no-check";
 
 class Renderer extends marked.Renderer {
+  isDev: boolean
+
+  constructor(isDev: boolean) {
+    super()
+    this.isDev = isDev
+  }
+
   heading(
     text: string,
     level: 1 | 2 | 3 | 4 | 5 | 6,
@@ -41,11 +48,21 @@ class Renderer extends marked.Renderer {
     if (href.startsWith("#")) {
       return `<a href="${href}" title="${title}">${text}</a>`;
     }
+    const isInternal = !href.startsWith("http")
+
+    if (isInternal && !this.isDev) {
+      if (href.endsWith(".md")) {
+        href = href.slice(0, -3) + ".html"
+      }
+
+      return `<a href="${href}" title="${title}" rel="noopener noreferrer">${text}</a>`;
+    }
+
     return `<a href="${href}" title="${title}" rel="noopener noreferrer">${text}</a>`;
   }
 }
 
-export function render(markdown: string, baseUrl: string | undefined): string {
+export function render(markdown: string, baseUrl: string | undefined, isDev: IsDev): string {
   if (!markdown) {
     return "";
   }
@@ -54,10 +71,10 @@ export function render(markdown: string, baseUrl: string | undefined): string {
   const html = marked(markdown, {
     baseUrl,
     gfm: true,
-    renderer: new Renderer(),
+    renderer: new Renderer(isDev),
   });
 
-  return html;
+  return template(html, isDev);
 }
 
 const reloadScript = `
@@ -73,7 +90,7 @@ const reloadScript = `
   </script>
 `;
 
-export const template = (content: string, isDev: IsDev) => {
+const template = (content: string, isDev: IsDev) => {
   return `
   <html>
   <link rel="stylesheet" href="/style.css" />

@@ -4,8 +4,8 @@ import Generic from "./generic.ts";
 import { getContentType } from "./utils.ts";
 
 export default class RendererManager {
-  md = Md;
-  generic = Generic;
+  md: Md;
+  generic: Generic;
 
   constructor(dirName: DirName) {
     this.md = new Md(dirName);

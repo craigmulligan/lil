@@ -27,8 +27,8 @@ If you'd like to work with me or simply chat you can reach me [here](mailto:webs
 
 *<small>Some small description of the table above. More info [here](/abc "something you want to see")</small>*
 
-[posts](/x.html)
-[projects](/y.html)
+[posts](/x.md)
+[projects](/y.md)
 [gpg public key](/publickey.txt)
 [twitter](/y)
 [github](/github)

@@ -1,0 +1,158 @@
+
+  <html>
+  <link rel="stylesheet" href="/style.css" />
+  <body>
+    <div>
+    <article>
+    <h1 id="a-simple-approach-to-testing-nextjs-apps"><a class="anchor" aria-hidden="true" tabindex="-1" href="#a-simple-approach-to-testing-nextjs-apps">A simple approach to testing next.js apps</a></h1><p><strong>DEVON:</strong> Hello, I&#39;m Devon and you&#39;re listening to the ninth episode of Pioneers. A series of conversations with the designers, engineers, writers and inventors who are shaping computing as we know it. Today, I&#39;m talking with Howard Rheingold.</p>
+<p><mark>Howard first plugged into the internet</mark> in 1983 before the world wide web even existed. He was one of the first non-programmers to see computers as mind amplifiers rather than just computing or word processing machines and he coined the word virtual community through his experience as a member of <a href="#" title="null">the WELL</a>, one of the first online communities and he&#39;s talked in depth about collective action and coordination online.</p>
+<p><strong>The other day</strong> I was writing some tests for a next.js app, I couldn&#39;t find any straight forward recommendations on how to test both Pages and APIs with next.js so I thought I&#39;d throw up some samples of my method.</p>
+<p><i>I usually lean as far towards integrations tests as is comfortable to write. Meaning I rarely stub things out but I still want the suite to be straight forward to write and quick to run so there is a balance to strike.</i></p>
+<blockquote>
+<p>&quot;We are the animal that made its progress through culture. Our progress has not been through genetics, but being able to do something faster than genetics can do.&quot;</p>
+</blockquote>
+<ol>
+<li>Page Methods - eg. <code>getServerSideProps</code>, <code>getInitialProps</code>.</li>
+<li>Page Components - eg. Given <code>x</code> props does the component render correctly.</li>
+<li>Api endpoints - these are your typical rest api tests. eg <code>get /api/user/&lt;userId&gt;</code> and asserting it returns the expected values.</li>
+</ol>
+<p>Below I&#39;ll run through each type of test case and provide some examples.</p>
+<div class="highlight highlight-source-diff"><pre>public class Hello1
+{
+<span class="token unchanged"><span class="token prefix unchanged"> </span><span class="token line">  public static void Main()
+</span><span class="token prefix unchanged"> </span><span class="token line">  {
+</span></span><span class="token deleted-sign deleted"><span class="token prefix deleted">-</span><span class="token line">      System.Console.WriteLine("Hello, World!");
+</span></span><span class="token inserted-sign inserted"><span class="token prefix inserted">+</span><span class="token line">      System.Console.WriteLine("Rock all night long!");
+</span></span><span class="token unchanged"><span class="token prefix unchanged"> </span><span class="token line">  }
+</span></span>}</pre></div><h3 id="1--2-page-methods--page-components"><a class="anchor" aria-hidden="true" tabindex="-1" href="#1--2-page-methods--page-components">1 + 2 Page Methods &amp; Page Components</a></h3><p>I&#39;ll lump these two together because often the output of one is used as the input for the other so they are convenient to write together.</p>
+<p>Lets image we have the following Dashboard page, It fetches all the users in the db prints them to screen.</p>
+<div class="highlight highlight-source-jsx"><pre><span class="token comment">// pages/dashboard.js</span>
+<span class="token keyword">import</span> client <span class="token keyword">from</span> <span class="token string">"nawr/client"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> <span class="token function-variable function">Dash</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span> users <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h3</span><span class="token punctuation">></span></span><span class="token plain-text">User list</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h3</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span><span class="token plain-text">Here is a list of all users stored in the db</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token punctuation">{</span>users<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span> email<span class="token punctuation">,</span> id <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span> <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>id<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token punctuation">{</span>email<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">const</span> <span class="token function-variable function">getServerSideProps</span> <span class="token operator">=</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span> req<span class="token punctuation">,</span> res <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> records <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token keyword">await</span> client<span class="token punctuation">.</span><span class="token function">query</span><span class="token punctuation">(</span><span class="token string">"select * from users;"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">return</span> <span class="token punctuation">{</span>
+    props<span class="token operator">:</span> <span class="token punctuation">{</span>
+      users<span class="token operator">:</span> records
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> Dash<span class="token punctuation">;</span></pre></div><p>I&#39;d write a test case like this:</p>
+<div class="highlight highlight-source-javascript"><pre><span class="token comment">// __tests__/pages/dashboard.test.js</span>
+
+<span class="token keyword">import</span> renderer <span class="token keyword">from</span> <span class="token string">"react-test-renderer"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> Dash<span class="token punctuation">,</span> <span class="token punctuation">{</span> getServerSideProps <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"../../pages/dashboard"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> createRequest<span class="token punctuation">,</span> createResponse <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"node-mocks-http"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> createUser <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"../../lib/db"</span><span class="token punctuation">;</span>
+
+<span class="token function">it</span><span class="token punctuation">(</span><span class="token string">"Renders correctly"</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> users <span class="token operator">=</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      email<span class="token operator">:</span> <span class="token string">"x@x.com"</span><span class="token punctuation">,</span>
+      id<span class="token operator">:</span> <span class="token number">1</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      email<span class="token operator">:</span> <span class="token string">"y@y.com"</span><span class="token punctuation">,</span>
+      id<span class="token operator">:</span> <span class="token number">2</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">return</span> Promise<span class="token punctuation">.</span><span class="token function">all</span><span class="token punctuation">(</span>users<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>createUser<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">const</span> req <span class="token operator">=</span> <span class="token function">createRequest</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    method<span class="token operator">:</span> <span class="token string">"GET"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">const</span> res <span class="token operator">=</span> <span class="token function">createResponse</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> props <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">getServerSideProps</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    req<span class="token punctuation">,</span>
+    res
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">// assert getServerSideProps returns the correct props</span>
+  <span class="token function">expect</span><span class="token punctuation">(</span>props<span class="token punctuation">.</span>users<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toBe</span><span class="token punctuation">(</span>users<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">// asserts props + component result in the same snapshot</span>
+  <span class="token keyword">const</span> tree <span class="token operator">=</span> renderer<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token operator">&lt;</span>Dash <span class="token punctuation">{</span><span class="token operator">...</span>props<span class="token punctuation">}</span> <span class="token operator">/</span><span class="token operator">></span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toJSON</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">expect</span><span class="token punctuation">(</span>tree<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toMatchSnapshot</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre></div><p>A few things to notice, I&#39;m not spinning up an http server instead I&#39;m just mocking the Http request and response, I found the tests to be much cleaner and I still feel like I&#39;m testing the important things. I&#39;m just snapshotting the page component, if snapshot testing doesn&#39;t suite your use case I&#39;d try out <code>@testing-library/react</code>.</p>
+<h3 id="3-api-calls"><a class="anchor" aria-hidden="true" tabindex="-1" href="#3-api-calls">3. API calls</a></h3><p>I found a <a href="https://dev.to/metamas/testing-next-js-api-routes-55g3" title="null" rel="noopener noreferrer">post</a> which recommends using next&#39;s internal API resolver launch a server run requests. This method works fine but I&#39;d prefer not to use internal APIs if possible. The approach I&#39;ve gone with is similar to our Page methods.</p>
+<p>For instance, if you have an api like this.</p>
+<div class="highlight highlight-source-javascript"><pre><span class="token comment">// /pages/api/logout.js</span>
+<span class="token keyword">import</span> withSession <span class="token keyword">from</span> <span class="token string">"../../../lib/session"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">handler</span><span class="token punctuation">(</span><span class="token parameter">req<span class="token punctuation">,</span> res</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  req<span class="token punctuation">.</span>session<span class="token punctuation">.</span><span class="token function">destroy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token string">"Logged out"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">withSession</span><span class="token punctuation">(</span>handler<span class="token punctuation">)</span><span class="token punctuation">;</span></pre></div><p>Notice I&#39;ve exported the handler seperately, this is so I can easily mock the <code>withSession</code> higher order function in my tests. Generally when testing APIs I&#39;d use <code>supertest</code> but after using the http stub method for pages I thought I&#39;d use the same method for api calls, the test cases look something like:</p>
+<div class="highlight highlight-source-javascript"><pre><span class="token comment">// __tests__/pages/api/logout.test.js</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> createUser <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"../../../lib/db"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> apply<span class="token punctuation">,</span> options <span class="token keyword">as</span> sessionOptions<span class="token punctuation">,</span> login <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"../../../lib/session"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> handler <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"../../../pages/api/auth/logout"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> createRequest<span class="token punctuation">,</span> createResponse <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"node-mocks-http"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> cookie <span class="token keyword">from</span> <span class="token string">"cookie"</span><span class="token punctuation">;</span>
+
+<span class="token function">it</span><span class="token punctuation">(</span><span class="token string">"Returns 402 if auth fails"</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> newUser <span class="token operator">=</span> <span class="token punctuation">{</span>
+    email<span class="token operator">:</span> <span class="token string">"x@x.com"</span><span class="token punctuation">,</span>
+    password<span class="token operator">:</span> <span class="token string">"123"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">await</span> <span class="token function">createUser</span><span class="token punctuation">(</span>newUser<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">const</span> req <span class="token operator">=</span> <span class="token function">createRequest</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    method<span class="token operator">:</span> <span class="token string">"POST"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">const</span> res <span class="token operator">=</span> <span class="token function">createResponse</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">// Adds session to the request</span>
+  <span class="token keyword">await</span> <span class="token function">apply</span><span class="token punctuation">(</span>req<span class="token punctuation">,</span> res<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">// log user in</span>
+  <span class="token keyword">await</span> <span class="token function">login</span><span class="token punctuation">(</span>req<span class="token punctuation">,</span> newUser<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">// call api</span>
+  <span class="token keyword">await</span> <span class="token function">handler</span><span class="token punctuation">(</span>req<span class="token punctuation">,</span> res<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">const</span> cookies <span class="token operator">=</span> cookie<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>res<span class="token punctuation">.</span><span class="token function">getHeader</span><span class="token punctuation">(</span><span class="token string">"set-cookie"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">expect</span><span class="token punctuation">(</span>cookies<span class="token punctuation">[</span>sessionOptions<span class="token punctuation">.</span>cookieName<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toBeFalsy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token function">expect</span><span class="token punctuation">(</span>res<span class="token punctuation">.</span>statusCode<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toBe</span><span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre></div><p>You may be wondering where I do my setup/cleanup around each test run. I generally add a global Jest <code>beforeEach</code> and <code>afterEach</code>. They&#39;d look something like:</p>
+<div class="highlight highlight-source-javascript"><pre><span class="token comment">// setupTests.js</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> up<span class="token punctuation">,</span> down <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"nawr/migrate"</span><span class="token punctuation">;</span>
+
+<span class="token function">beforeEach</span><span class="token punctuation">(</span><span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token function">up</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token function">afterEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token function">down</span><span class="token punctuation">(</span><span class="token punctuation">{</span> to<span class="token operator">:</span> <span class="token number">0</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre></div><p>This above was mostly pseudo-code but it should be fairly easy to apply these methods to your app. If are after full working examples the code can be found <a href="https://github.com/hobochild/boiler" title="null" rel="noopener noreferrer">here</a></p>
+<div class="highlight highlight-source-python"><pre><span class="token keyword">def</span> <span class="token function">cut</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">:</span>
+  <span class="token triple-quoted-string string">"""Some python function"""</span>
+  <span class="token keyword">return</span> s</pre></div>
+    </article>
+    </div>
+    </content>
+  </body>
+  false
+  </html>
+  
