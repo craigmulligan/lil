@@ -125,10 +125,9 @@ const template = (
     <meta name="author" content="${opts.author}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/style.css" />
-    <meta property="og:title" content="The Rock" />
-    <meta property="og:type" content="video.movie" />
-    <meta property="og:url" content="https://www.imdb.com/title/tt0117500/" />
-    <meta property="og:image" content="https://ia.media-imdb.com/images/rock.jpg" />
+    <meta property="og:title" content="${opts.title}" />
+    <meta property="og:description" content="${opts.description}" />
+    <meta property="og:type" content="article" />
   </head>
   <body>
     <div>
