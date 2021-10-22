@@ -19,17 +19,17 @@ const MEDIA_TYPES: Record<string, string> = {
 };
 
 export default abstract class Renderer {
-  dirName: string
+  dirName: string;
 
   constructor(dirName: string) {
-    this.dirName = dirName
+    this.dirName = dirName;
   }
 
   static getContentType(pathname: string): string | undefined {
     return MEDIA_TYPES[path.extname(pathname)];
   }
 
-  getOutputFsPath(
+  getUrl(
     fsPath: string,
     targetExt?: string,
   ) {
@@ -40,12 +40,20 @@ export default abstract class Renderer {
       targetExt = currentExt;
     }
 
-    return path.join(
-      "build",
-      `${relativefileName.replace(currentExt, "")}${targetExt}`,
-    );
+    return `${relativefileName.replace(currentExt, "")}${targetExt}`;
   }
 
+  getOutputFsPath(
+    fsPath: string,
+    targetExt?: string,
+  ) {
+    const p = this.getUrl(fsPath, targetExt);
+
+    return path.join(
+      "build",
+      p,
+    );
+  }
 
   public abstract build(fileName: string): Promise<void>;
   public abstract serve(fileName: string): Promise<Response>;

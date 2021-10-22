@@ -1,5 +1,5 @@
 import { fs } from "../deps.ts";
-import Renderer from './renderer.ts'
+import Renderer from "./renderer.ts";
 
 export default class Generic extends Renderer {
   async serve(fsPath: string) {

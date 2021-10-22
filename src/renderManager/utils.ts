@@ -1,5 +1,5 @@
-import { marked, frontMatter, Prism } from "../deps.ts";
-import { IsDev, FrontMatterData } from "../types.ts";
+import { frontMatter, marked, Prism } from "../deps.ts";
+import { FrontMatterData, IsDev } from "../types.ts";
 
 // TODO: figure out some dynamic importing mechanism.
 // awaiting async support in marked.
@@ -16,11 +16,11 @@ import "https://esm.sh/prismjs@1.25.0/components/prism-c?no-check";
 import "https://esm.sh/prismjs@1.25.0/components/prism-css?no-check";
 
 class Renderer extends marked.Renderer {
-  isDev: boolean
+  isDev: boolean;
 
   constructor(isDev: boolean) {
-    super()
-    this.isDev = isDev
+    super();
+    this.isDev = isDev;
   }
 
   heading(
@@ -49,11 +49,11 @@ class Renderer extends marked.Renderer {
     if (href.startsWith("#")) {
       return `<a href="${href}" title="${title}">${text}</a>`;
     }
-    const isInternal = !href.startsWith("http")
+    const isInternal = !href.startsWith("http");
 
     if (isInternal && !this.isDev) {
       if (href.endsWith(".md")) {
-        href = href.slice(0, -3) + ".html"
+        href = href.slice(0, -3) + ".html";
       }
 
       return `<a href="${href}" title="${title}" rel="noopener noreferrer">${text}</a>`;
@@ -63,19 +63,25 @@ class Renderer extends marked.Renderer {
   }
 }
 
-export function render(markdown: string, baseUrl: string | undefined, isDev: IsDev): string {
+export function render(
+  url: string,
+  markdown: string,
+  baseUrl: string | undefined,
+  isDev: IsDev,
+): string {
   if (!markdown) {
     return "";
   }
-  const { attributes, body } = frontMatter(markdown)
+  const { attributes, body } = frontMatter(markdown);
 
   const html = marked(body, {
     baseUrl,
     gfm: true,
     renderer: new Renderer(isDev),
+    xhtml: true,
   });
 
-  return template(html, isDev, attributes as FrontMatterData);
+  return template(url, html, isDev, attributes as FrontMatterData);
 }
 
 const reloadScript = `
@@ -91,26 +97,49 @@ const reloadScript = `
   </script>
 `;
 
-const template = (content: string, isDev: IsDev, opts: FrontMatterData = {}) => {
+const homeLink = `<div>
+      <small>
+        <a href="/">
+          &#8592;
+          Home
+        </a>
+      </small>
+    </div>`;
+
+const template = (
+  url: string,
+  content: string,
+  isDev: IsDev,
+  opts: FrontMatterData = {},
+) => {
+  const isHome = url === "index.html";
+
   return `
   <html>
-  <title>
-    ${opts.title}
-  </title>
-  <meta name="description" content="${opts.description}">
-  <meta name="keywords" content="${opts.keywords}">
-  <meta name="author" content="${opts.author}">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/style.css" />
+  <head>
+    <title>
+      ${opts.title}
+    </title>
+    <meta name="description" content="${opts.description}">
+    <meta name="keywords" content="${opts.keywords}">
+    <meta name="author" content="${opts.author}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css" />
+    <meta property="og:title" content="The Rock" />
+    <meta property="og:type" content="video.movie" />
+    <meta property="og:url" content="https://www.imdb.com/title/tt0117500/" />
+    <meta property="og:image" content="https://ia.media-imdb.com/images/rock.jpg" />
+  </head>
   <body>
     <div>
     <article>
+    ${isHome ? "" : homeLink}
     ${content}
     </article>
     </div>
     </content>
   </body>
-  ${isDev && reloadScript}
+  ${isDev ? reloadScript : ""}
   </html>
   `;
 };
