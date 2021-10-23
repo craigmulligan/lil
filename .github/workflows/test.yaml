@@ -17,9 +17,9 @@ jobs:
         uses: denolib/setup-deno@v2
         with:
           deno-version: 1.15.2
-      - name: Lint Deno Module
+      - name: Format check 
         run: make fmt_check 
-      - name: Build Deno Module
+      - name: Reload
         run: make reload 
-      - name: Test Deno Module
-        run: make test_watch
+      - name: Test
+        run: make test
