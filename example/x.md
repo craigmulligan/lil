@@ -1,18 +1,33 @@
 # A simple approach to testing next.js apps
 
-<strong>DEVON:</strong> Hello, I'm Devon and you're listening to the ninth episode of Pioneers. A series of conversations with the designers, engineers, writers and inventors who are shaping computing as we know it. Today, I'm talking with Howard Rheingold.
+<strong>DEVON:</strong> Hello, I'm Devon and you're listening to the ninth
+episode of Pioneers. A series of conversations with the designers, engineers,
+writers and inventors who are shaping computing as we know it. Today, I'm
+talking with Howard Rheingold.
 
-<mark>Howard first plugged into the internet</mark> in 1983 before the world wide web even existed. He was one of the first non-programmers to see computers as mind amplifiers rather than just computing or word processing machines and he coined the word virtual community through his experience as a member of [the WELL](#), one of the first online communities and he's talked in depth about collective action and coordination online.
+<mark>Howard first plugged into the internet</mark> in 1983 before the world
+wide web even existed. He was one of the first non-programmers to see computers
+as mind amplifiers rather than just computing or word processing machines and he
+coined the word virtual community through his experience as a member of
+[the WELL](#), one of the first online communities and he's talked in depth
+about collective action and coordination online.
 
-<strong>The other day</strong> I was writing some tests for a next.js app, I couldn't find any straight forward recommendations on how to test both Pages and APIs with next.js so I thought I'd throw up some samples of my method.
+<strong>The other day</strong> I was writing some tests for a next.js app, I
+couldn't find any straight forward recommendations on how to test both Pages and
+APIs with next.js so I thought I'd throw up some samples of my method.
 
-<i>I usually lean as far towards integrations tests as is comfortable to write. Meaning I rarely stub things out but I still want the suite to be straight forward to write and quick to run so there is a balance to strike.</i>
+<i>I usually lean as far towards integrations tests as is comfortable to write.
+Meaning I rarely stub things out but I still want the suite to be straight
+forward to write and quick to run so there is a balance to strike.</i>
 
-> "We are the animal that made its progress through culture. Our progress has not been through genetics, but being able to do something faster than genetics can do."
+> "We are the animal that made its progress through culture. Our progress has
+> not been through genetics, but being able to do something faster than genetics
+> can do."
 
 1. Page Methods - eg. `getServerSideProps`, `getInitialProps`.
 2. Page Components - eg. Given `x` props does the component render correctly.
-3. Api endpoints - these are your typical rest api tests. eg `get /api/user/<userId>` and asserting it returns the expected values.
+3. Api endpoints - these are your typical rest api tests. eg
+   `get /api/user/<userId>` and asserting it returns the expected values.
 
 Below I'll run through each type of test case and provide some examples.
 
@@ -29,9 +44,11 @@ public class Hello1
 
 ### 1 + 2 Page Methods & Page Components
 
-I'll lump these two together because often the output of one is used as the input for the other so they are convenient to write together.
+I'll lump these two together because often the output of one is used as the
+input for the other so they are convenient to write together.
 
-Lets image we have the following Dashboard page, It fetches all the users in the db prints them to screen.
+Lets image we have the following Dashboard page, It fetches all the users in the
+db prints them to screen.
 
 ```jsx
 // pages/dashboard.js
@@ -54,8 +71,8 @@ export const getServerSideProps = async ({ req, res }) => {
 
   return {
     props: {
-      users: records
-    }
+      users: records,
+    },
   };
 };
 
@@ -76,24 +93,24 @@ it("Renders correctly", async () => {
   const users = [
     {
       email: "x@x.com",
-      id: 1
+      id: 1,
     },
     {
       email: "y@y.com",
-      id: 2
-    }
+      id: 2,
+    },
   ];
 
   return Promise.all(users.map(createUser));
 
   const req = createRequest({
-    method: "GET"
+    method: "GET",
   });
   const res = createResponse();
 
   const { props } = await getServerSideProps({
     req,
-    res
+    res,
   });
 
   // assert getServerSideProps returns the correct props
@@ -105,11 +122,18 @@ it("Renders correctly", async () => {
 });
 ```
 
-A few things to notice, I'm not spinning up an http server instead I'm just mocking the Http request and response, I found the tests to be much cleaner and I still feel like I'm testing the important things. I'm just snapshotting the page component, if snapshot testing doesn't suite your use case I'd try out `@testing-library/react`.
+A few things to notice, I'm not spinning up an http server instead I'm just
+mocking the Http request and response, I found the tests to be much cleaner and
+I still feel like I'm testing the important things. I'm just snapshotting the
+page component, if snapshot testing doesn't suite your use case I'd try out
+`@testing-library/react`.
 
 ### 3. API calls
 
-I found a [post](https://dev.to/metamas/testing-next-js-api-routes-55g3) which recommends using next's internal API resolver launch a server run requests. This method works fine but I'd prefer not to use internal APIs if possible. The approach I've gone with is similar to our Page methods.
+I found a [post](https://dev.to/metamas/testing-next-js-api-routes-55g3) which
+recommends using next's internal API resolver launch a server run requests. This
+method works fine but I'd prefer not to use internal APIs if possible. The
+approach I've gone with is similar to our Page methods.
 
 For instance, if you have an api like this.
 
@@ -125,12 +149,15 @@ export function handler(req, res) {
 export default withSession(handler);
 ```
 
-Notice I've exported the handler seperately, this is so I can easily mock the `withSession` higher order function in my tests. Generally when testing APIs I'd use `supertest` but after using the http stub method for pages I thought I'd use the same method for api calls, the test cases look something like:
+Notice I've exported the handler seperately, this is so I can easily mock the
+`withSession` higher order function in my tests. Generally when testing APIs I'd
+use `supertest` but after using the http stub method for pages I thought I'd use
+the same method for api calls, the test cases look something like:
 
 ```javascript
 // __tests__/pages/api/logout.test.js
 import { createUser } from "../../../lib/db";
-import { apply, options as sessionOptions, login } from "../../../lib/session";
+import { apply, login, options as sessionOptions } from "../../../lib/session";
 import { handler } from "../../../pages/api/auth/logout";
 import { createRequest, createResponse } from "node-mocks-http";
 import cookie from "cookie";
@@ -138,13 +165,13 @@ import cookie from "cookie";
 it("Returns 402 if auth fails", async () => {
   const newUser = {
     email: "x@x.com",
-    password: "123"
+    password: "123",
   };
 
   await createUser(newUser);
 
   const req = createRequest({
-    method: "POST"
+    method: "POST",
   });
 
   const res = createResponse();
@@ -165,11 +192,13 @@ it("Returns 402 if auth fails", async () => {
 });
 ```
 
-You may be wondering where I do my setup/cleanup around each test run. I generally add a global Jest `beforeEach` and `afterEach`. They'd look something like:
+You may be wondering where I do my setup/cleanup around each test run. I
+generally add a global Jest `beforeEach` and `afterEach`. They'd look something
+like:
 
 ```javascript
 // setupTests.js
-import { up, down } from "nawr/migrate";
+import { down, up } from "nawr/migrate";
 
 beforeEach(async () => {
   return up();
@@ -180,8 +209,9 @@ afterEach(() => {
 });
 ```
 
-This above was mostly pseudo-code but it should be fairly easy to apply these methods to your app. If are after full working examples the code can be found [here](https://github.com/hobochild/boiler)
-
+This above was mostly pseudo-code but it should be fairly easy to apply these
+methods to your app. If are after full working examples the code can be found
+[here](https://github.com/hobochild/boiler)
 
 ```python
 def cut(s):

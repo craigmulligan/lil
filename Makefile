@@ -1,14 +1,14 @@
 .PHONY: dev 
 dev:
-	deno run --unstable --watch  --allow-all ./src/mod.ts ./example --dev
+	deno run --watch  --allow-all ./src/mod.ts ./example --dev
 
 .PHONY: build 
 build:
-	deno run --unstable --allow-all ./src/mod.ts ./example
+	deno run --allow-all ./src/mod.ts ./example
 
 .PHONY: reload 
 reload:
-	deno cache --unstable ./src/mod.ts --reload
+	deno cache ./src/mod.ts --reload
 
 .PHONY: serve 
 serve:
@@ -17,3 +17,7 @@ serve:
 .PHONY: fmt
 fmt:
 	deno fmt src/
+
+.PHONY: compile
+compile:
+	deno compile --allow-all --output ./bin/lil ./src/mod.ts

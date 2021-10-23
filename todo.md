@@ -1,3 +1,3 @@
-* home link (custom component?)
-* optimize images
-* rss 
+- home link (custom component?)
+- optimize images
+- rss

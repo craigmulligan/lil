@@ -7,6 +7,7 @@ type Args = { dev?: IsDev; _: DirName[] };
 const args = flags.parse(Deno.args) as Args;
 const dirName = path.normalize(args._[0] || "./");
 
+// TODO help
 if (args.dev) {
   serve(dirName);
 } else {
