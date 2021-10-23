@@ -68,4 +68,4 @@ export default async function serve(dirName: DirName, opts: Options) {
   for await (const connection of server) {
     handleConnection(connection);
   }
-};
+}
