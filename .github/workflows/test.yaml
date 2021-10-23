@@ -1,0 +1,25 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Git Checkout Deno Module
+        uses: actions/checkout@v2
+      - name: Use Deno 1.15.2
+        uses: denolib/setup-deno@v2
+        with:
+          deno-version: 1.15.2
+      - name: Lint Deno Module
+        run: make fmt_check 
+      - name: Build Deno Module
+        run: make reload 
+      - name: Test Deno Module
+        run: make test_watch
