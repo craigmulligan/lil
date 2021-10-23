@@ -98,7 +98,7 @@ const reloadScript = `
 
 const homeLink = `<div>
       <small>
-        <a href="/">
+        <a id="home" href="/">
           &#8592;
           Home
         </a>

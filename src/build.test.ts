@@ -53,7 +53,15 @@ Deno.test("Check html output", async () => {
   const html = await Deno.readTextFile(`${outDirName}/index.html`);
   const $ = cheerio.load(html);
 
+  // Check the title is set correctly 
   const title = $("title").text();
-  console.error(title);
   assertEquals(title.trim(), "lil example site");
+
+  // Check the home link isn't loaded
+  const homeLink = $("a#home");
+  assertEquals(homeLink.length, 0);
+
+  // Check that the reload script isn't included
+  const script = $("script");
+  assertEquals(script.length, 0);
 });
