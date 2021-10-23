@@ -1,4 +1,4 @@
-import { DirName } from "../types.ts";
+import { DirName, Options } from "../types.ts";
 import Md from "./md.ts";
 import Generic from "./generic.ts";
 import Render from "./renderer.ts";
@@ -7,9 +7,9 @@ export default class RendererManager {
   md: Md;
   generic: Generic;
 
-  constructor(dirName: DirName) {
-    this.md = new Md(dirName);
-    this.generic = new Generic(dirName);
+  constructor(dirName: DirName, opts: Options) {
+    this.md = new Md(dirName, opts);
+    this.generic = new Generic(dirName, opts);
   }
 
   async serve(fsPath: string) {

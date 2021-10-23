@@ -1,5 +1,5 @@
 import { frontMatter, marked, Prism } from "../deps.ts";
-import { FrontMatterData, IsDev } from "../types.ts";
+import { FrontMatterData, Options } from "../types.ts";
 
 // TODO: figure out some dynamic importing mechanism.
 // awaiting async support in marked.
@@ -16,11 +16,11 @@ import "https://esm.sh/prismjs@1.25.0/components/prism-c?no-check";
 import "https://esm.sh/prismjs@1.25.0/components/prism-css?no-check";
 
 class Renderer extends marked.Renderer {
-  isDev: boolean;
+  opts: Options;
 
-  constructor(isDev: boolean) {
+  constructor(opts: Options) {
     super();
-    this.isDev = isDev;
+    this.opts = opts;
   }
 
   heading(
@@ -51,7 +51,7 @@ class Renderer extends marked.Renderer {
     }
     const isInternal = !href.startsWith("http");
 
-    if (isInternal && !this.isDev) {
+    if (isInternal && !this.opts.dev) {
       if (href.endsWith(".md")) {
         href = href.slice(0, -3) + ".html";
       }
@@ -66,8 +66,7 @@ class Renderer extends marked.Renderer {
 export function render(
   url: string,
   markdown: string,
-  baseUrl: string | undefined,
-  isDev: IsDev,
+  opts: Options,
 ): string {
   if (!markdown) {
     return "";
@@ -75,13 +74,13 @@ export function render(
   const { attributes, body } = frontMatter(markdown);
 
   const html = marked(body, {
-    baseUrl,
+    baseUrl: opts.baseUrl,
     gfm: true,
-    renderer: new Renderer(isDev),
+    renderer: new Renderer(opts),
     xhtml: true,
   });
 
-  return template(url, html, isDev, attributes as FrontMatterData);
+  return template(url, html, opts, attributes as FrontMatterData);
 }
 
 const reloadScript = `
@@ -106,11 +105,19 @@ const homeLink = `<div>
       </small>
     </div>`;
 
+const accentColorStyles = (accentColor: Options['accentColor']) => {
+  return `<style>
+    :root {
+      --accent-color: ${accentColor};
+    }
+  </style>`;
+}
+
 const template = (
   url: string,
   content: string,
-  isDev: IsDev,
-  opts: FrontMatterData = {},
+  opts: Options,
+  frontMatter: FrontMatterData = {},
 ) => {
   const isHome = url === "index.html";
 
@@ -118,15 +125,16 @@ const template = (
   <html>
   <head>
     <title>
-      ${opts.title}
+      ${frontMatter.title}
     </title>
-    <meta name="description" content="${opts.description}">
-    <meta name="keywords" content="${opts.keywords}">
-    <meta name="author" content="${opts.author}">
+    <meta name="description" content="${frontMatter.description}">
+    <meta name="keywords" content="${frontMatter.keywords}">
+    <meta name="author" content="${frontMatter.author}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/style.css" />
-    <meta property="og:title" content="${opts.title}" />
-    <meta property="og:description" content="${opts.description}" />
+    ${opts.accentColor ? accentColorStyles(opts.accentColor) : ""} 
+    <meta property="og:title" content="${frontMatter.title}" />
+    <meta property="og:description" content="${frontMatter.description}" />
     <meta property="og:type" content="article" />
   </head>
   <body>
@@ -138,7 +146,7 @@ const template = (
     </div>
     </content>
   </body>
-  ${isDev ? reloadScript : ""}
+  ${opts.dev ? reloadScript : ""}
   </html>
   `;
 };

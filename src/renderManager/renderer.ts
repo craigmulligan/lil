@@ -1,3 +1,4 @@
+import { DirName, Options } from "../types.ts";
 import { path } from "../deps.ts";
 
 const MEDIA_TYPES: Record<string, string> = {
@@ -19,10 +20,12 @@ const MEDIA_TYPES: Record<string, string> = {
 };
 
 export default abstract class Renderer {
-  dirName: string;
+  dirName: DirName;
+  opts: Options;
 
-  constructor(dirName: string) {
+  constructor(dirName: DirName, opts: Options) {
     this.dirName = dirName;
+    this.opts = opts;
   }
 
   static getContentType(pathname: string): string | undefined {

@@ -6,7 +6,7 @@ export default class Md extends Renderer {
   async serve(fsPath: string) {
     const content = await Deno.readTextFile(fsPath);
     const url = this.getUrl(fsPath, ".html");
-    const html = render(url, content, "/", true);
+    const html = render(url, content, this.opts);
     const headers = new Headers();
     headers.set("content-type", "text/html;charset=utf-8");
 
@@ -20,7 +20,7 @@ export default class Md extends Renderer {
     const content = await Deno.readTextFile(fsPath);
     const outputName = this.getOutputFsPath(fsPath, ".html");
     const url = this.getUrl(fsPath, ".html");
-    const html = render(url, content, "/", false);
+    const html = render(url, content, this.opts);
 
     await fs.ensureFile(outputName);
     return Deno.writeTextFile(outputName, html);

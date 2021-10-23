@@ -1,10 +1,11 @@
-import { fs, path } from "./deps.ts";
+import { DirName, Options } from "./types.ts";
+import { fs } from "./deps.ts";
 import RenderManager from "./renderManager/mod.ts";
 
-export const build = async (dirName: string): Promise<void> => {
+export const build = async (dirName: DirName, opts: Options): Promise<void> => {
   await fs.emptyDir("./build");
   const builds = [];
-  const renderManager = new RenderManager(dirName);
+  const renderManager = new RenderManager(dirName, opts);
 
   for await (
     const entry of fs.walk(dirName, {

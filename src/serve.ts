@@ -1,3 +1,4 @@
+import { DirName, Options } from "./types.ts";
 import { fs, path } from "./deps.ts";
 import ReloadManager from "./reloadManager.ts";
 import RenderManager from "./renderManager/mod.ts";
@@ -12,10 +13,10 @@ async function serveError(err: Error) {
   });
 }
 
-export const serve = async (dirName: string) => {
+export const serve = async (dirName: DirName, opts: Options) => {
   const server = Deno.listen({ port: 8080 });
   const reloadManager = new ReloadManager(dirName);
-  const renderManager = new RenderManager(dirName);
+  const renderManager = new RenderManager(dirName, opts);
   reloadManager.start();
 
   async function handleRequest(request: Request) {
@@ -35,32 +36,17 @@ export const serve = async (dirName: string) => {
     }
 
     try {
-      try {
-        const fileInfo = await Deno.stat(fsPath);
-        if (fileInfo.isDirectory) {
-          if (await fs.exists(fsPath + "index.md")) {
-            return renderManager.serve(fsPath + "index.md");
-          } else if (await fs.exists(fsPath + "index.html")) {
-            return renderManager.serve(fsPath + "index.html");
-          } else {
-            throw Error("Not Found");
-          }
+      const fileInfo = await Deno.stat(fsPath);
+      if (fileInfo.isDirectory) {
+        if (await fs.exists(fsPath + "index.md")) {
+          return renderManager.serve(fsPath + "index.md");
+        } else if (await fs.exists(fsPath + "index.html")) {
+          return renderManager.serve(fsPath + "index.html");
         } else {
-          return renderManager.serve(fsPath);
+          throw Error("Not Found");
         }
-      } catch (e) {
-        // TODO should we be allowing this?
-        if (e instanceof Deno.errors.NotFound) {
-          if (await fs.exists(fsPath + ".md")) {
-            return renderManager.serve(fsPath + ".md");
-          } else if (await fs.exists(fsPath + ".html")) {
-            return renderManager.serve(fsPath + ".html");
-          } else {
-            throw e;
-          }
-        } else {
-          throw e;
-        }
+      } else {
+        return renderManager.serve(fsPath);
       }
     } catch (e) {
       return serveError(e);
