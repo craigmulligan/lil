@@ -13,7 +13,7 @@ async function serveError(err: Error) {
   });
 }
 
-export const serve = async (dirName: DirName, opts: Options) => {
+export default async function serve(dirName: DirName, opts: Options) {
   const server = Deno.listen({ port: 8080 });
   const reloadManager = new ReloadManager(dirName);
   const renderManager = new RenderManager(dirName, opts);

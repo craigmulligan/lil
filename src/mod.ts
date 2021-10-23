@@ -1,6 +1,6 @@
 import { Options } from "./types.ts";
-import { build } from "./build.ts";
-import { serve } from "./serve.ts";
+import build from "./build.ts";
+import serve from "./serve.ts";
 import { flags, path } from "./deps.ts";
 
 const opts = flags.parse(Deno.args) as Options;

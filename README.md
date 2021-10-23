@@ -21,10 +21,10 @@ There are a few things baked in.
 - [x] Fast Live reloads in dev mode.
 - [x] Automatic code styling (github like).
 - [x] Respects users light/dark mode.
-- [] RSS.
-- [] Search.
-- [] image optimization.
-- [] a11y checks.
+- [ ] RSS.
+- [ ] Search.
+- [ ] image optimization.
+- [ ] a11y checks.
 
 ## Install
 
