@@ -6,6 +6,11 @@ dev:
 build:
 	deno run --allow-all ./src/mod.ts ./example
 
+
+.PHONY: test_watch 
+test_watch:
+	deno test --allow-all --watch
+
 .PHONY: reload 
 reload:
 	deno cache ./src/mod.ts --reload
@@ -25,3 +30,5 @@ compile:
 .PHONY: help
 help:
 	deno run --allow-all ./src/mod.ts -h
+
+

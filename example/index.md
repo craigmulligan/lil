@@ -1,5 +1,5 @@
 ---
-title: Just hack'n
+title: lil example site 
 description: Nothing to see here
 ---
 
