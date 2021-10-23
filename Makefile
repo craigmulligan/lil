@@ -23,6 +23,10 @@ serve:
 fmt:
 	deno fmt src/
 
+.PHONY: fmt_check
+fmt_check:
+	deno fmt src/ --check
+
 .PHONY: compile
 compile:
 	deno compile --allow-all --output ./bin/lil ./src/mod.ts

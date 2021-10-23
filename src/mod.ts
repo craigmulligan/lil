@@ -7,9 +7,9 @@ const opts = flags.parse(Deno.args) as Options;
 const dirName = path.normalize(opts._[0] || "./");
 
 if (opts.accentColor) {
-  const rgb = opts.accentColor.split(',')
+  const rgb = opts.accentColor.split(",");
   if (rgb.length != 3) {
-    console.error("AccentColor must be in the rgb format: 255, 255, 255")
+    console.error("AccentColor must be in the rgb format: 255, 255, 255");
     Deno.exit(1);
   }
 }
@@ -18,7 +18,7 @@ if (opts.help || opts.h) {
     "dev": "Run dev server",
     "accentColor": "RGB accent color",
     "baseUrl": "Prefix urls - useful for github hosting",
-  })
+  });
 } else if (opts.dev) {
   serve(dirName, opts);
 } else {

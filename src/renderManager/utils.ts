@@ -105,13 +105,13 @@ const homeLink = `<div>
       </small>
     </div>`;
 
-const accentColorStyles = (accentColor: Options['accentColor']) => {
+const accentColorStyles = (accentColor: Options["accentColor"]) => {
   return `<style>
     :root {
       --accent-color: ${accentColor};
     }
   </style>`;
-}
+};
 
 const template = (
   url: string,

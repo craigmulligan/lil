@@ -2,7 +2,10 @@ import { DirName, Options } from "./types.ts";
 import { fs } from "./deps.ts";
 import RenderManager from "./renderManager/mod.ts";
 
-export default async function build(dirName: DirName, opts: Options): Promise<void> {
+export default async function build(
+  dirName: DirName,
+  opts: Options,
+): Promise<void> {
   await fs.emptyDir("./build");
   const builds = [];
   const renderManager = new RenderManager(dirName, opts);
@@ -17,4 +20,4 @@ export default async function build(dirName: DirName, opts: Options): Promise<vo
   }
 
   await Promise.all(builds);
-};
+}

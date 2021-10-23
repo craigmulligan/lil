@@ -1,14 +1,20 @@
-import build from "./build.ts"
-import { fs } from "./deps.ts"
+import build from "./build.ts";
+import { fs } from "./deps.ts";
 import { assertEquals, cheerio } from "./test_deps.ts";
 
 Deno.test("Check build writes all files.", async () => {
-  const dirName = "./example"
-  const outDirName = "./build"
-  const opts = { help: false, h: false, accentColor: "", baseUrl: "/", _: [dirName] }
+  const dirName = "./example";
+  const outDirName = "./build";
+  const opts = {
+    help: false,
+    h: false,
+    accentColor: "",
+    baseUrl: "/",
+    _: [dirName],
+  };
 
-  const inPaths = []
-  const outPaths = []
+  const inPaths = [];
+  const outPaths = [];
 
   for await (
     const entry of fs.walk(dirName, {
@@ -18,7 +24,7 @@ Deno.test("Check build writes all files.", async () => {
     inPaths.push(entry.path);
   }
 
-  await build(dirName, opts)
+  await build(dirName, opts);
 
   for await (
     const entry of fs.walk(outDirName, {
@@ -28,20 +34,26 @@ Deno.test("Check build writes all files.", async () => {
     outPaths.push(entry.path);
   }
 
-  assertEquals(inPaths.length, outPaths.length)
-})
+  assertEquals(inPaths.length, outPaths.length);
+});
 
 Deno.test("Check html output", async () => {
-  const dirName = "./example"
-  const outDirName = "./build"
-  const opts = { help: false, h: false, accentColor: "", baseUrl: "/", _: [dirName] }
+  const dirName = "./example";
+  const outDirName = "./build";
+  const opts = {
+    help: false,
+    h: false,
+    accentColor: "",
+    baseUrl: "/",
+    _: [dirName],
+  };
 
-  await build(dirName, opts)
+  await build(dirName, opts);
 
   const html = await Deno.readTextFile(`${outDirName}/index.html`);
-  const $ = cheerio.load(html)
+  const $ = cheerio.load(html);
 
   const title = $("title").text();
-  console.error(title)
-  assertEquals(title.trim(), "lil example site")
-})
+  console.error(title);
+  assertEquals(title.trim(), "lil example site");
+});
