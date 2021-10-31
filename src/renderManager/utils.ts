@@ -15,12 +15,16 @@ import "https://esm.sh/prismjs@1.25.0/components/prism-java?no-check";
 import "https://esm.sh/prismjs@1.25.0/components/prism-c?no-check";
 import "https://esm.sh/prismjs@1.25.0/components/prism-css?no-check";
 
+type Headings = string[];
+
 class Renderer extends marked.Renderer {
   opts: Options;
+  headings: Headings;
 
   constructor(opts: Options) {
     super();
     this.opts = opts;
+    this.headings = [];
   }
 
   heading(
@@ -29,6 +33,7 @@ class Renderer extends marked.Renderer {
     raw: string,
     slugger: marked.Slugger,
   ): string {
+    this.headings.push(text)
     const slug = slugger.slug(raw);
     return `<h${level} id="${slug}"><a class="anchor" aria-hidden="true" tabindex="-1" href="#${slug}">${text}</a></h${level}>`;
   }
@@ -61,6 +66,14 @@ class Renderer extends marked.Renderer {
 
     return `<a href="${href}" title="${title}" rel="noopener noreferrer">${text}</a>`;
   }
+
+  image(href: string, title: string, text: string) {
+    if (href === null) {
+      return text;
+    }
+
+    return `<img src="${href}" alt="${text}" title="${title}" />`
+  }
 }
 
 export function render(
@@ -73,14 +86,16 @@ export function render(
   }
   const { attributes, body } = frontMatter(markdown);
 
+  const renderer = new Renderer(opts)
+
   const html = marked(body, {
     baseUrl: opts.baseUrl,
     gfm: true,
-    renderer: new Renderer(opts),
+    renderer,
     xhtml: true,
   });
 
-  return template(url, html, opts, attributes as FrontMatterData);
+  return template(url, html, opts, attributes as FrontMatterData, renderer.headings);
 }
 
 const reloadScript = `
@@ -89,7 +104,7 @@ const reloadScript = `
 
     websocket.onmessage = (message) => {
         if (message.data === "RELOAD") {
-          console.log("reloading")
+          console.warn("reloading...")
           location.reload()
         }
     }
@@ -118,6 +133,7 @@ const template = (
   content: string,
   opts: Options,
   frontMatter: FrontMatterData = {},
+  headings: Headings,
 ) => {
   const isHome = url === "index.html";
 
@@ -125,7 +141,7 @@ const template = (
   <html>
   <head>
     <title>
-      ${frontMatter.title}
+      ${frontMatter.title || headings[0]}
     </title>
     <meta name="description" content="${frontMatter.description}">
     <meta name="keywords" content="${frontMatter.keywords}">
@@ -133,7 +149,7 @@ const template = (
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/style.css" />
     ${opts.accentColor ? accentColorStyles(opts.accentColor) : ""} 
-    <meta property="og:title" content="${frontMatter.title}" />
+    <meta property="og:title" content="${frontMatter.title || headings[0]}" />
     <meta property="og:description" content="${frontMatter.description}" />
     <meta property="og:type" content="article" />
   </head>

@@ -7,7 +7,7 @@ build:
 	deno run --allow-all ./src/mod.ts ./example
 
 .PHONY: test
-test_watch:
+test:
 	deno test --allow-all
 
 .PHONY: test_watch 
