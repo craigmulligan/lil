@@ -33,7 +33,7 @@ class Renderer extends marked.Renderer {
     raw: string,
     slugger: marked.Slugger,
   ): string {
-    this.headings.push(text)
+    this.headings.push(text);
     const slug = slugger.slug(raw);
     return `<h${level} id="${slug}"><a class="anchor" aria-hidden="true" tabindex="-1" href="#${slug}">${text}</a></h${level}>`;
   }
@@ -72,7 +72,7 @@ class Renderer extends marked.Renderer {
       return text;
     }
 
-    return `<img src="${href}" alt="${text}" title="${title}" />`
+    return `<img src="${href}" alt="${text}" title="${title}" />`;
   }
 }
 
@@ -86,7 +86,7 @@ export function render(
   }
   const { attributes, body } = frontMatter(markdown);
 
-  const renderer = new Renderer(opts)
+  const renderer = new Renderer(opts);
 
   const html = marked(body, {
     baseUrl: opts.baseUrl,
@@ -95,7 +95,13 @@ export function render(
     xhtml: true,
   });
 
-  return template(url, html, opts, attributes as FrontMatterData, renderer.headings);
+  return template(
+    url,
+    html,
+    opts,
+    attributes as FrontMatterData,
+    renderer.headings,
+  );
 }
 
 const reloadScript = `

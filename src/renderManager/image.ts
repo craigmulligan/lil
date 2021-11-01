@@ -1,4 +1,5 @@
-https://dev.to/franciscomendes10866/image-compression-with-node-js-4d7h
+// https://dev.to/franciscomendes10866/image-compression-with-node-js-4d7h
+// https://github.com/GoogleChromeLabs/squoosh/tree/dev/libsquoosh
 import { sharp } from "../deps.ts";
 import Renderer from "./renderer.ts";
 
