@@ -1,10 +1,10 @@
 .PHONY: dev 
 dev:
-	deno run --unstable --watch --allow-all ./src/mod.ts ./example --dev
+	deno --unstable run --watch --allow-all ./src/mod.ts ./example --dev
 
 .PHONY: build 
 build:
-	deno run --allow-all ./src/mod.ts ./example
+	deno --unstable run --allow-all ./src/mod.ts ./example
 
 .PHONY: test
 test:
@@ -16,7 +16,7 @@ test_watch:
 
 .PHONY: reload 
 reload:
-	deno cache ./src/mod.ts --reload --unstable
+	deno --unstable cache ./src/mod.ts --reload
 
 .PHONY: serve 
 serve:
