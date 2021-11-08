@@ -12,13 +12,13 @@ export default class ReloadManager {
     this.socket = socket;
   }
 
-  async handleFsEvent(e: Deno.FsEvent) {
+  handleFsEvent(_e: Deno.FsEvent) {
     console.log("New filesystem event");
     if (this.socket && this.socket.readyState === WebSocket.OPEN) {
       try {
         this.socket.send("RELOAD");
       } catch (err) {
-        console.log(e);
+        console.log(err);
       }
     }
   }

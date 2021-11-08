@@ -3,7 +3,7 @@ import { fs, path } from "./deps.ts";
 import ReloadManager from "./reloadManager.ts";
 import RenderManager from "./renderManager/mod.ts";
 
-async function serveError(err: Error) {
+function serveError(err: Error) {
   const headers = new Headers();
   headers.set("content-type", "text/plain");
 
@@ -23,7 +23,7 @@ export default async function serve(dirName: DirName, opts: Options) {
     const url = new URL(request.url);
 
     console.log(`new request : ${url.pathname}`);
-    let fsPath = path.join(dirName, url.pathname);
+    const fsPath = path.join(dirName, url.pathname);
 
     if (url.pathname === "/_reload") {
       const upgrade = request.headers.get("upgrade") || "";

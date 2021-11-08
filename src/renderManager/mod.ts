@@ -12,7 +12,7 @@ export default class RendererManager {
     this.generic = new Generic(dirName, opts);
   }
 
-  async serve(fsPath: string) {
+  serve(fsPath: string) {
     switch (Render.getContentType(fsPath)) {
       case "text/markdown":
         return this.md.serve(fsPath);
@@ -21,7 +21,7 @@ export default class RendererManager {
     }
   }
 
-  async build(fsPath: string) {
+  build(fsPath: string) {
     switch (Render.getContentType(fsPath)) {
       case "text/markdown":
         return this.md.build(fsPath);
