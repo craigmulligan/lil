@@ -8,11 +8,11 @@ build:
 
 .PHONY: test
 test:
-	deno test --allow-all
+	deno --unstable test --allow-all
 
 .PHONY: test_watch 
 test_watch:
-	deno test --allow-all --watch
+	deno --unstable test --allow-all --watch
 
 .PHONY: reload 
 reload:
@@ -32,8 +32,8 @@ fmt_check:
 
 .PHONY: compile
 compile:
-	deno compile --allow-all --output ./bin/lil ./src/mod.ts
+	deno --unstable compile --allow-all --output ./bin/lil ./src/mod.ts
 
 .PHONY: help
 help:
-	deno run --allow-all ./src/mod.ts -h
+	deno --unstable run --allow-all ./src/mod.ts -h
