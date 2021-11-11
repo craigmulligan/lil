@@ -9,6 +9,10 @@ export type FrontMatterData = {
   author?: string;
 };
 
+export type LilMetadata = {
+  version: string
+}
+
 export type Options = {
   dev?: IsDev;
   _: DirName[];
@@ -16,4 +20,5 @@ export type Options = {
   baseUrl: string;
   help: boolean;
   h: boolean;
+  styleURL: string;
 };

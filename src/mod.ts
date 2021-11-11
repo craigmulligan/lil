@@ -3,7 +3,20 @@ import build from "./build.ts";
 import serve from "./serve.ts";
 import { flags, path } from "./deps.ts";
 
-const opts = flags.parse(Deno.args) as Options;
+const userOpts = flags.parse(Deno.args) as Options;
+
+const version = 'main'
+const styleURL = `https://cdn.jsdelivr.net/gh/hobochild/lil@${version}/style.css`
+
+const defaultOpts = {
+  styleURL
+}
+
+const opts = {
+  ...defaultOpts,
+  ...userOpts
+}
+
 const dirName = path.normalize(opts._[0] || "./");
 
 if (opts.accentColor) {

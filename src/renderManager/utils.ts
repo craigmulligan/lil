@@ -154,7 +154,7 @@ const template = (
     <meta name="keywords" content="${frontMatter.keywords}">
     <meta name="author" content="${frontMatter.author}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="${opts.styleURL}" />
     ${opts.accentColor ? accentColorStyles(opts.accentColor) : ""} 
     <meta property="og:title" content="${frontMatter.title || headings[0]}" />
     <meta property="og:description" content="${frontMatter.description}" />

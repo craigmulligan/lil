@@ -20,7 +20,7 @@ reload:
 
 .PHONY: reload_force
 reload_force:
-	deno --unstable cache --lock=lock.json --lock-write ./src/mod.ts --reload
+	deno --unstable cache --lock=lock.json --lock-write --reload ./src/mod.ts 
 
 .PHONY: serve
 serve:
