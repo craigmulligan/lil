@@ -38,12 +38,15 @@ fmt:
 fmt_check:
 	deno fmt src/ --check
 
+ensure_bin_dir:
+	mkdir -p bin
+
 .PHONY: compile
-compile:
+compile: ensure_bin_dir
 	deno --unstable compile --allow-all --output ./bin/lil ./src/mod.ts
 
 .PHONY: compile_all
-compile_all:
+compile_all: ensure_bin_dir
 	deno --unstable compile --target x86_64-unknown-linux-gnu --allow-all --output ./bin/lil-x86_64-unknown-linux-gnu ./src/mod.ts
 	deno --unstable compile --target x86_64-pc-windows-msvc --allow-all --output ./bin/lil-x86_64-pc-windows-msvc ./src/mod.ts
 	deno --unstable compile --target x86_64-apple-darwin --allow-all --output ./bin/lil-x86_64-pc-windows-msvc ./src/mod.ts
@@ -52,6 +55,3 @@ compile_all:
 .PHONY: help
 help:
 	deno --unstable run --allow-all ./src/mod.ts -h
-
-
-
