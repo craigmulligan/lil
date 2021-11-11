@@ -26,6 +26,10 @@ reload_force:
 serve:
 	python3 -m http.server 8080 --directory ./build
 
+.PHONY: lint 
+lint:
+	deno lint src/
+
 .PHONY: fmt
 fmt:
 	deno fmt src/
@@ -38,6 +42,16 @@ fmt_check:
 compile:
 	deno --unstable compile --allow-all --output ./bin/lil ./src/mod.ts
 
+.PHONY: compile_all
+compile_all:
+	deno --unstable compile --target x86_64-unknown-linux-gnu --allow-all --output ./bin/lil-x86_64-unknown-linux-gnu ./src/mod.ts
+	deno --unstable compile --target x86_64-pc-windows-msvc --allow-all --output ./bin/lil-x86_64-pc-windows-msvc ./src/mod.ts
+	deno --unstable compile --target x86_64-apple-darwin --allow-all --output ./bin/lil-x86_64-pc-windows-msvc ./src/mod.ts
+	deno --unstable compile --target aarch64-apple-darwin --allow-all --output ./bin/lil-aarch64-apple-darwin ./src/mod.ts
+
 .PHONY: help
 help:
 	deno --unstable run --allow-all ./src/mod.ts -h
+
+
+

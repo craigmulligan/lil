@@ -13,13 +13,15 @@ jobs:
     steps:
       - name: Git Checkout Deno Module
         uses: actions/checkout@v2
-      - name: Use Deno 1.15.2
+      - name: Use Deno 1.16.0
         uses: denolib/setup-deno@v2
         with:
-          deno-version: 1.15.2
+          deno-version: 1.16.0
+      - name: Reload
+        run: make reload
+      - name: Lint 
+        run: make lint 
       - name: Format check 
         run: make fmt_check 
-      - name: Reload
-        run: make reload 
       - name: Test
         run: make test

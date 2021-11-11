@@ -1,0 +1,24 @@
+name: test
+
+on:
+  push:
+    tags:
+      - "*.*.*"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Use Deno 1.16.0
+        uses: denolib/setup-deno@v2
+        with:
+          deno-version: 1.16.0
+      - name: Reload
+        run: make reload
+      - name: Compile 
+        run: make compile_all 
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ./bin/*
