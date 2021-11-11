@@ -6,7 +6,7 @@
 export { default as frontMatter } from "https://esm.sh/front-matter@4.0.2";
 
 export { default as marked } from "https://esm.sh/marked@3.0.7";
-export * as Prism from "https://esm.sh/prismjs@1.25.0";
+export { default as Prism } from "https://esm.sh/prismjs@1.25.0";
 
 export * as path from "https://deno.land/std@0.113.0/path/mod.ts";
 export * as flags from "https://deno.land/std@0.113.0/flags/mod.ts";

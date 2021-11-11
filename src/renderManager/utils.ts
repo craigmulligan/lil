@@ -40,9 +40,11 @@ class Renderer extends marked.Renderer {
 
   code(code: string, language = "") {
     language = language.split(",")[0];
+    debugger;
     const grammar = Object.hasOwnProperty.call(Prism.languages, language)
       ? Prism.languages[language]
       : undefined;
+
     if (grammar === undefined) {
       return `<pre>${code}</pre>`;
     }

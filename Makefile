@@ -8,7 +8,7 @@ build:
 
 .PHONY: test
 test:
-	deno --unstable test --allow-all
+	deno  --unstable test  --allow-all
 
 .PHONY: test_watch 
 test_watch:
@@ -16,9 +16,13 @@ test_watch:
 
 .PHONY: reload 
 reload:
-	deno --unstable cache ./src/mod.ts --reload
+	deno --unstable cache --lock=lock.json ./src/mod.ts --reload
 
-.PHONY: serve 
+.PHONY: reload_force
+reload_force:
+	deno --unstable cache --lock=lock.json --lock-write ./src/mod.ts --reload
+
+.PHONY: serve
 serve:
 	python3 -m http.server 8080 --directory ./build
 
