@@ -14,7 +14,7 @@ test:
 test_watch:
 	deno --unstable test --allow-all --watch
 
-.PHONY: reload 
+.PHONY: reload
 reload:
 	deno --unstable cache --lock=lock.json ./src/mod.ts --reload
 
