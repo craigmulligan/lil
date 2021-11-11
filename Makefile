@@ -55,3 +55,7 @@ compile_all: ensure_bin_dir
 .PHONY: help
 help:
 	deno --unstable run --allow-all ./src/mod.ts -h
+
+.PHONY: css_minify 
+css_minify:
+	yui-compressor style.css -o style.min.css
