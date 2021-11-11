@@ -5,17 +5,18 @@ import { flags, path } from "./deps.ts";
 
 const userOpts = flags.parse(Deno.args) as Options;
 
-const version = 'main'
-const styleURL = `https://cdn.jsdelivr.net/gh/hobochild/lil@${version}/style.css`
+const version = "0.0.2";
+const styleURL =
+  `https://cdn.jsdelivr.net/gh/hobochild/lil@${version}/style.min.css`;
 
 const defaultOpts = {
-  styleURL
-}
+  styleURL,
+};
 
 const opts = {
   ...defaultOpts,
-  ...userOpts
-}
+  ...userOpts,
+};
 
 const dirName = path.normalize(opts._[0] || "./");
 
@@ -32,6 +33,8 @@ if (opts.help || opts.h) {
     "accentColor": "RGB accent color",
     "baseUrl": "Prefix urls - useful for github hosting",
   });
+} else if (opts.version) {
+  console.log(`lil: ${version}`);
 } else if (opts.dev) {
   serve(dirName, opts);
 } else {

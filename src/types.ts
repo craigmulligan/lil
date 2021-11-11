@@ -10,8 +10,8 @@ export type FrontMatterData = {
 };
 
 export type LilMetadata = {
-  version: string
-}
+  version: string;
+};
 
 export type Options = {
   dev?: IsDev;
@@ -21,4 +21,5 @@ export type Options = {
   help: boolean;
   h: boolean;
   styleURL: string;
+  version: boolean;
 };

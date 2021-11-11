@@ -11,7 +11,8 @@ Deno.test("Check build writes all files.", async () => {
     accentColor: "",
     baseUrl: "/",
     _: [dirName],
-    styleURL: "/style.css"
+    styleURL: "/style.css",
+    version: false,
   };
 
   const inPaths = [];
@@ -47,7 +48,8 @@ Deno.test("Check html output", async () => {
     accentColor: "",
     baseUrl: "/",
     _: [dirName],
-    styleURL: "/style.css"
+    styleURL: "/style.css",
+    version: false,
   };
 
   await build(dirName, opts);
@@ -77,7 +79,8 @@ Deno.test("Check uses first heading for title if no front matter", async () => {
     accentColor: "",
     baseUrl: "/",
     _: [dirName],
-    styleURL: "/style.css"
+    styleURL: "/style.css",
+    version: false,
   };
 
   await build(dirName, opts);
