@@ -1,6 +1,6 @@
 .PHONY: dev 
 dev:
-	deno --unstable run --watch --allow-all ./src/mod.ts ./example --dev
+	deno --unstable run --watch --allow-all ./src/mod.ts ./example --dev --styleURL "/style.css"
 
 .PHONY: build 
 build:
@@ -58,4 +58,4 @@ help:
 
 .PHONY: css_minify 
 css_minify:
-	yui-compressor style.css -o style.min.css
+	yui-compressor example/style.css -o style.min.css
