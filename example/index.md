@@ -1,5 +1,5 @@
 ---
-title: lil example site 
+title: lil example site
 description: Nothing to see here
 ---
 
@@ -14,8 +14,7 @@ canals of London, where I worked for [beryl](https://beryl.cc/) and
 
 Right now I'm contracting remotely & focusing on my 🏄.
 
-If you'd like to work with me or simply chat you can reach me
-[here](mailto:website@hobochild.com).
+If you'd like to work with me or simply chat you can reach me hey at craigmulligan.com.
 
 ---
 
