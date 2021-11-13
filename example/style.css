@@ -183,8 +183,12 @@ blockquote, dl, figure, form, ol, p, pre, table, ul {
 img {
   height: auto;
   max-width: 100%;
+  margin: 0 auto;
+  display: block;
 }
 
+
+img[src$='#round'] { border-radius: 100%;}
 
 button,
 input[type="button"],

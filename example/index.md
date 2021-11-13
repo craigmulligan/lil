@@ -3,8 +3,8 @@ title: lil example site
 description: Nothing to see here
 ---
 
+![A picture of Craig with suntan lotion on his nose.](./profile.jpeg#round)
 
-![A picture of Craig with suntan lotion on his nose.](./profile.jpeg)
 
 ## I'm craig ([@hobochild](https://github.com/hobochild)), I <mark>love</mark> trying to build complex systems with <mark>simple software</mark>.
 
