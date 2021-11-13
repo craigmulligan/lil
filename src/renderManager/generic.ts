@@ -1,6 +1,5 @@
 import { fs } from "../deps.ts";
 import Renderer from "./renderer.ts";
-import { Buffer } from "https://deno.land/std/io/mod.ts";
 
 export default class Generic extends Renderer {
   async serve(fsPath: string) {
