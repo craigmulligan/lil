@@ -92,3 +92,23 @@ Deno.test("Check uses first heading for title if no front matter", async () => {
   const title = $("title").text();
   assertEquals(title.trim(), $("h1").text());
 });
+
+
+Deno.test("Check that the feed.xml is written", async () => {
+  const dirName = "./example";
+  const outDirName = "./build";
+  const opts = {
+    help: false,
+    h: false,
+    accentColor: "",
+    baseUrl: "/",
+    _: [dirName],
+    styleURL: "/style.css",
+    version: false,
+  };
+
+  await build(dirName, opts);
+
+  const xml = await Deno.readTextFile(`${outDirName}/feed.xml`);
+  assertEquals(xml, "adfaaffafa");
+});

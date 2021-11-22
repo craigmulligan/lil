@@ -11,7 +11,6 @@ export default class RendererManager {
     this.md = new Md(dirName, opts);
     this.generic = new Generic(dirName, opts);
   }
-
   serve(fsPath: string) {
     switch (Render.getContentType(fsPath)) {
       case "text/markdown":
@@ -19,6 +18,14 @@ export default class RendererManager {
       default:
         return this.generic.serve(fsPath);
     }
+  }
+
+  buildComplete() {
+    return Promise.all([this.md.buildComplete(), this.generic.buildComplete()])
+  }
+
+  buildStart() {
+    return Promise.all([this.md.buildStart(), this.generic.buildStart()])
   }
 
   build(fsPath: string) {
@@ -30,3 +37,4 @@ export default class RendererManager {
     }
   }
 }
+

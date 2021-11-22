@@ -9,6 +9,7 @@ export default async function build(
   await fs.emptyDir("./build");
   const builds = [];
   const renderManager = new RenderManager(dirName, opts);
+  await renderManager.buildStart();
 
   for await (
     const entry of fs.walk(dirName, {
@@ -20,4 +21,6 @@ export default async function build(
   }
 
   await Promise.all(builds);
+
+  await renderManager.buildComplete();
 }

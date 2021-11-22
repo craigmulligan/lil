@@ -3,6 +3,14 @@ import { fs } from "../deps.ts";
 import Renderer from "./renderer.ts";
 
 export default class Md extends Renderer {
+  feed: unknown
+
+
+  async buildStart() {
+    this.feed = {}
+  }
+
+
   async serve(fsPath: string) {
     const content = await Deno.readTextFile(fsPath);
     const url = this.getUrl(fsPath, ".html");
@@ -24,5 +32,12 @@ export default class Md extends Renderer {
 
     await fs.ensureFile(outputName);
     return Deno.writeTextFile(outputName, html);
+  }
+
+  async buildComplete() {
+    console.log("hey!")
+    const outputFs = this.getOutputFsPath("feed.xml");
+    console.log({ outputFs })
+    return Deno.writeTextFile(outputFs, "hi")
   }
 }
