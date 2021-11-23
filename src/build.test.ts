@@ -110,13 +110,16 @@ Deno.test("Check that the feed.xml is written", async () => {
 
   await build(dirName, opts);
 
-  // check for absolute url
+  const html = await Deno.readTextFile(`${outDirName}/index.html`);
   const $ = cheerio.load(html);
 
   // Check the title is set correctly
 
-  const url = $("a").filter((_, elem) => elem.text() == "posts")[0];
-  assertEquals(url.href(), `${opts.baseUrl}/posts`);
+  const url = $("a").toArray().map($).find((elem) => {
+    return elem.text() === "posts"
+  });
+
+  assertEquals(url?.attr('href'), `${opts.baseUrl}/posts`);
 
   // const xml = await Deno.readTextFile(`${outDirName}/feed.xml`);
   // assertEquals(xml, "adfaaffafa");

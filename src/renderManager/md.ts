@@ -2,14 +2,20 @@ import { render } from "./utils.ts";
 import { fs } from "../deps.ts";
 import Renderer from "./renderer.ts";
 
+type RSSFeedItem = {
+  title: string,
+  url: string,
+  datetime: Date,
+  content: string,
+}
+
 export default class Md extends Renderer {
-  feed: unknown
+  // rssFeedItems: RSSFeedItem[]
 
 
   async buildStart() {
-    this.feed = {}
+    // this.rssFeedItems = []
   }
-
 
   async serve(fsPath: string) {
     const content = await Deno.readTextFile(fsPath);
@@ -29,7 +35,6 @@ export default class Md extends Renderer {
     const outputName = this.getOutputFsPath(fsPath, ".html");
     const url = this.getUrl(fsPath, ".html");
     const html = render(url, content, this.opts);
-
     await fs.ensureFile(outputName);
     return Deno.writeTextFile(outputName, html);
   }
