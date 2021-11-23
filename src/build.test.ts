@@ -9,7 +9,7 @@ Deno.test("Check build writes all files.", async () => {
     help: false,
     h: false,
     accentColor: "",
-    baseUrl: "/",
+    baseUrl: "",
     _: [dirName],
     styleURL: "/style.css",
     version: false,
@@ -47,7 +47,7 @@ Deno.test("Check html output", async () => {
     help: false,
     h: false,
     accentColor: "",
-    baseUrl: "/",
+    baseUrl: "",
     _: [dirName],
     styleURL: "/style.css",
     version: false,
@@ -78,7 +78,7 @@ Deno.test("Check uses first heading for title if no front matter", async () => {
     help: false,
     h: false,
     accentColor: "",
-    baseUrl: "/",
+    baseUrl: "",
     _: [dirName],
     styleURL: "/style.css",
     version: false,
@@ -95,7 +95,7 @@ Deno.test("Check uses first heading for title if no front matter", async () => {
 });
 
 
-Deno.test("Check that the feed.xml is written", async () => {
+Deno.test("Check that absolute urls are used when baseUrl is passed.", async () => {
   const dirName = "./example";
   const outDirName = "./build";
   const opts = {
@@ -113,17 +113,10 @@ Deno.test("Check that the feed.xml is written", async () => {
   const html = await Deno.readTextFile(`${outDirName}/index.html`);
   const $ = cheerio.load(html);
 
-  // Check the title is set correctly
-
   const url = $("a").toArray().map($).find((elem) => {
     return elem.text() === "posts"
   });
 
-  assertEquals(url?.attr('href'), `${opts.baseUrl}/posts`);
-
-  // const xml = await Deno.readTextFile(`${outDirName}/feed.xml`);
-  // assertEquals(xml, "adfaaffafa");
-
-
-
+  // check that absolute urls are used when a baseURL is passed. 
+  assertEquals(url?.attr('href'), `${opts.baseUrl}/x.html`);
 });

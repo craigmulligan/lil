@@ -62,10 +62,10 @@ class Renderer extends marked.Renderer {
         href = href.slice(0, -3) + ".html";
       }
 
-      return `<a href="${href}" title="${title}" rel="noopener noreferrer">${text}</a>`;
+      return `<a href="${this.opts.baseUrl + href}" title="${title}" rel="noopener noreferrer">${text}</a>`;
     }
 
-    return `<a href="${href}" title="${title}" rel="noopener noreferrer">${text}</a>`;
+    return `<a href="${this.opts.baseUrl + href}" title="${title}" rel="noopener noreferrer">${text}</a>`;
   }
 
   image(href: string, title: string, text: string) {
@@ -73,7 +73,7 @@ class Renderer extends marked.Renderer {
       return text;
     }
 
-    return `<img src="${href}" alt="${text}" title="${title}" />`;
+    return `<img src="${this.opts.baseUrl + href}" alt="${text}" title="${title}" />`;
   }
 }
 
@@ -90,7 +90,7 @@ export function render(
   const renderer = new Renderer(opts);
 
   const html = marked(body, {
-    baseUrl: opts.baseUrl,
+    baseUrl: opts.baseUrl || "",
     gfm: true,
     renderer,
     xhtml: true,
