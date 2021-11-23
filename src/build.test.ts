@@ -36,7 +36,8 @@ Deno.test("Check build writes all files.", async () => {
     outPaths.push(entry.path);
   }
 
-  assertEquals(inPaths.length, outPaths.length);
+  // + 1 for the feed.xml
+  assertEquals(inPaths.length + 1, outPaths.length);
 });
 
 Deno.test("Check html output", async () => {
@@ -101,7 +102,7 @@ Deno.test("Check that the feed.xml is written", async () => {
     help: false,
     h: false,
     accentColor: "",
-    baseUrl: "/",
+    baseUrl: "https://x.com",
     _: [dirName],
     styleURL: "/style.css",
     version: false,
@@ -109,6 +110,17 @@ Deno.test("Check that the feed.xml is written", async () => {
 
   await build(dirName, opts);
 
-  const xml = await Deno.readTextFile(`${outDirName}/feed.xml`);
-  assertEquals(xml, "adfaaffafa");
+  // check for absolute url
+  const $ = cheerio.load(html);
+
+  // Check the title is set correctly
+
+  const url = $("a").filter((_, elem) => elem.text() == "posts")[0];
+  assertEquals(url.href(), `${opts.baseUrl}/posts`);
+
+  // const xml = await Deno.readTextFile(`${outDirName}/feed.xml`);
+  // assertEquals(xml, "adfaaffafa");
+
+
+
 });

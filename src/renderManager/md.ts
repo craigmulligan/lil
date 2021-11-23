@@ -35,9 +35,7 @@ export default class Md extends Renderer {
   }
 
   async buildComplete() {
-    console.log("hey!")
-    const outputFs = this.getOutputFsPath("feed.xml");
-    console.log({ outputFs })
-    return Deno.writeTextFile(outputFs, "hi")
+    const outputFs = this.getOutputFsPath(`${this.dirName}/feed.xml`);
+    return Deno.writeTextFile(outputFs, "hi");
   }
 }

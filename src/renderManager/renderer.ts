@@ -169,11 +169,11 @@ export default abstract class Renderer {
   }
 
   buildComplete() {
-    return new Promise(() => { })
+    return Promise.resolve()
   }
 
   buildStart() {
-    return new Promise(() => { })
+    return Promise.resolve()
   }
 
   public abstract build(fileName: string): Promise<void>;
