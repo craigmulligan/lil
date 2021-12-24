@@ -1,5 +1,6 @@
 import { frontMatter, marked, Prism } from "../deps.ts";
 import { FrontMatterData, Options } from "../types.ts";
+import RSS from '../rssManager'
 
 // TODO: figure out some dynamic importing mechanism.
 // awaiting async support in marked.
@@ -81,6 +82,7 @@ export function render(
   url: string,
   markdown: string,
   opts: Options,
+  feed: RSS,
 ): string {
   if (!markdown) {
     return "";
@@ -96,13 +98,23 @@ export function render(
     xhtml: true,
   });
 
-  return template(
+  const renderedHtml = template(
     url,
     html,
     opts,
     attributes as FrontMatterData,
     renderer.headings,
   );
+
+  feed.addItem({
+    title: getTitle(FrontMatterData, renderer.headings),
+    id: url,
+    link: opts.baseUrl + url,
+    description: getDescription(FrontMatterData, renderer.headings),
+    content: renderedHtml
+  })
+
+  return renderedHtml
 }
 
 const reloadScript = `
@@ -135,6 +147,14 @@ const accentColorStyles = (accentColor: Options["accentColor"]) => {
   </style>`;
 };
 
+const getTitle = (frontMatter: FrontMatterData, headings: Headings) => {
+  return frontMatter.title || headings[0]
+}
+
+const getDescription = (frontMatter: FrontMatterData, headings: Headings) => {
+  return frontMatter.description || headings[0]
+}
+
 const template = (
   url: string,
   content: string,
@@ -156,8 +176,8 @@ const template = (
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="${opts.styleURL}" />
     ${opts.accentColor ? accentColorStyles(opts.accentColor) : ""} 
-    <meta property="og:title" content="${frontMatter.title || headings[0]}" />
-    <meta property="og:description" content="${frontMatter.description}" />
+    <meta property="og:title" content="${getTitle(frontMatter, headings)}" />
+    <meta property="og:description" content="${getDescription(frontMatter, headings)}" />
     <meta property="og:type" content="article" />
   </head>
   <body>

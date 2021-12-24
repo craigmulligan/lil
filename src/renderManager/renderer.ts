@@ -1,5 +1,6 @@
 import { DirName, Options } from "../types.ts";
 import { path } from "../deps.ts";
+import RSS from "../rssManager"
 
 const MEDIA_TYPES: Record<string, string> = {
   ".md": "text/markdown",
@@ -132,10 +133,12 @@ const MEDIA_TYPES: Record<string, string> = {
 export default abstract class Renderer {
   dirName: DirName;
   opts: Options;
+  feed: RSS;
 
-  constructor(dirName: DirName, opts: Options) {
+  constructor(dirName: DirName, opts: Options, feed: RSS) {
     this.dirName = dirName;
     this.opts = opts;
+    this.feed = feed;
   }
 
   static getContentType(pathname: string): string | undefined {

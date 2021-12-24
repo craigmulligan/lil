@@ -2,15 +2,18 @@ import { DirName, Options } from "../types.ts";
 import Md from "./md.ts";
 import Generic from "./generic.ts";
 import Render from "./renderer.ts";
+import RSS from "./rss.ts"
 
 export default class RendererManager {
   md: Md;
   generic: Generic;
 
   constructor(dirName: DirName, opts: Options) {
-    this.md = new Md(dirName, opts);
-    this.generic = new Generic(dirName, opts);
+    this.feed = new RSS(opts)
+    this.md = new Md(dirName, opts, this.feed);
+    this.generic = new Generic(dirName, opts, this.feed);
   }
+
   serve(fsPath: string) {
     switch (Render.getContentType(fsPath)) {
       case "text/markdown":
@@ -20,12 +23,8 @@ export default class RendererManager {
     }
   }
 
-  buildComplete() {
-    return Promise.all([this.md.buildComplete(), this.generic.buildComplete()])
-  }
-
-  buildStart() {
-    return Promise.all([this.md.buildStart(), this.generic.buildStart()])
+  onBuildComplete() {
+    return this.feed.generate()
   }
 
   build(fsPath: string) {

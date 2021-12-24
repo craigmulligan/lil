@@ -4,7 +4,7 @@ export type DirName = string;
 export type FrontMatterData = {
   title?: string;
   description?: string;
-  publishedAt?: string;
+  published_at?: string;
   keywords?: string;
   author?: string;
 };
@@ -17,6 +17,7 @@ export type Options = {
   dev?: IsDev;
   _: DirName[];
   accentColor: string;
+  // TODO change to baseURL
   baseUrl: string;
   help: boolean;
   h: boolean;
