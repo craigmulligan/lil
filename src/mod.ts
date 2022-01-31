@@ -5,7 +5,7 @@ import { flags, path } from "./deps.ts";
 
 const userOpts = flags.parse(Deno.args) as Options;
 
-export const version = "0.0.3-rc.4";
+export const version = "0.0.3-rc.5";
 const styleURL =
   `https://cdn.jsdelivr.net/gh/hobochild/lil@${version}/style.min.css`;
 
