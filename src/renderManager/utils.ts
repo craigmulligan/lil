@@ -57,15 +57,16 @@ class Renderer extends marked.Renderer {
     }
     const isInternal = !href.startsWith("http");
 
+    const titleAttr = title ? `title="${title}` : ''
     if (isInternal && !this.opts.dev) {
       if (href.endsWith(".md")) {
         href = href.slice(0, -3) + ".html";
       }
 
-      return `<a href="${href}" title="${title}" rel="noopener noreferrer">${text}</a>`;
+      return `<a href="${href}" ${titleAttr}  rel="noopener noreferrer">${text}</a>`;
     }
 
-    return `<a href="${href}" title="${title}" rel="noopener noreferrer">${text}</a>`;
+    return `<a href="${href}" ${titleAttr}  rel="noopener noreferrer">${text}</a>`;
   }
 
   image(href: string, title: string, text: string) {
