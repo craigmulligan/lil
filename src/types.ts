@@ -7,6 +7,7 @@ export type FrontMatterData = {
   publishedAt?: string;
   keywords?: string;
   author?: string;
+  body?: string;
 };
 
 export type LilMetadata = {

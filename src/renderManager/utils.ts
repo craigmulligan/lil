@@ -1,4 +1,4 @@
-import { frontMatter, marked, Prism } from "../deps.ts";
+import { yaml, marked, Prism } from "../deps.ts";
 import { FrontMatterData, Options } from "../types.ts";
 
 // TODO: figure out some dynamic importing mechanism.
@@ -14,6 +14,29 @@ import "https://esm.sh/prismjs@1.25.0/components/prism-jsx?no-check";
 import "https://esm.sh/prismjs@1.25.0/components/prism-java?no-check";
 import "https://esm.sh/prismjs@1.25.0/components/prism-c?no-check";
 import "https://esm.sh/prismjs@1.25.0/components/prism-css?no-check";
+
+export function frontMatter(content: string) {
+  if (content.startsWith("---")) {
+    const frontMatter = [];
+    const lines = content.split(/\r?\n/);
+    lines.shift();
+
+    while (lines[0] && !lines[0].startsWith("---")) {
+      frontMatter.push(lines.shift());
+    }
+    lines.shift();
+
+    const attributes = yaml.parse(frontMatter.join("\n"));
+    const body = lines.join("\n");
+
+    return { attributes, body }
+  }
+
+  return {
+    body: content,
+    attributes: {}
+  }
+}
 
 type Headings = string[];
 

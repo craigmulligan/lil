@@ -8,7 +8,7 @@ build:
 
 .PHONY: test
 test:
-	deno  --unstable test  --allow-all
+	deno --unstable test  --allow-all
 
 .PHONY: test_watch 
 test_watch:
