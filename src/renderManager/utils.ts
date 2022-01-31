@@ -1,4 +1,4 @@
-import { yaml, marked, Prism } from "../deps.ts";
+import { marked, Prism, yaml } from "../deps.ts";
 import { FrontMatterData, Options } from "../types.ts";
 
 // TODO: figure out some dynamic importing mechanism.
@@ -29,13 +29,13 @@ export function frontMatter(content: string) {
     const attributes = yaml.parse(frontMatter.join("\n"));
     const body = lines.join("\n");
 
-    return { attributes, body }
+    return { attributes, body };
   }
 
   return {
     body: content,
-    attributes: {}
-  }
+    attributes: {},
+  };
 }
 
 type Headings = string[];
@@ -80,7 +80,7 @@ class Renderer extends marked.Renderer {
     }
     const isInternal = !href.startsWith("http");
 
-    const titleAttr = title ? `title="${title}` : ''
+    const titleAttr = title ? `title="${title}` : "";
     if (isInternal && !this.opts.dev) {
       if (href.endsWith(".md")) {
         href = href.slice(0, -3) + ".html";
